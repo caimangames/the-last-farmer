@@ -75,21 +75,21 @@ func try_water(pos: Vector2i) -> bool:
 	return true
 
 
-func try_plant(pos: Vector2i, seed: ItemData) -> bool:
+func try_plant(pos: Vector2i, seed_item: ItemData) -> bool:
 	var tile: Dictionary = _tiles.get(pos, {})
 	if tile.is_empty() or tile.state != State.TILLED:
 		return false
-	if seed.crop == null:
+	if seed_item.crop == null:
 		return false
-	if not seed.crop.can_grow_in_season(TimeManager.season):
+	if not seed_item.crop.can_grow_in_season(TimeManager.season):
 		return false
-	if not _player.inventory.remove_item(seed, 1):
+	if not _player.inventory.remove_item(seed_item, 1):
 		return false
 	tile.state = State.PLANTED
-	tile.crop_id = seed.crop.id
+	tile.crop_id = seed_item.crop.id
 	tile.days_grown = 0
 	_update_crop(pos)
-	EventBus.crop_planted.emit(seed.crop, pos)
+	EventBus.crop_planted.emit(seed_item.crop, pos)
 	return true
 
 

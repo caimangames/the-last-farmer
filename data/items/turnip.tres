@@ -1,4 +1,4 @@
-[gd_resource type="ItemData" load_steps=4 format=3]
+[gd_resource type="Resource" load_steps=4 format=3]
 
 [ext_resource type="Script" uid="uid://c1krvdd6j621e" path="res://src/resources/item_data.gd" id="1_item"]
 [ext_resource type="Texture2D" path="res://assets/sprites/props/outdoor_decor.png" id="2_decor"]

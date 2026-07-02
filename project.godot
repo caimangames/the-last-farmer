@@ -27,6 +27,10 @@ SceneManager="*res://src/globals/scene_manager.gd"
 AudioManager="*res://src/globals/audio_manager.gd"
 ItemDatabase="*res://src/globals/item_database.gd"
 
+[debug]
+
+gdscript/warnings/unused_signal=0
+
 [display]
 
 window/size/viewport_width=640

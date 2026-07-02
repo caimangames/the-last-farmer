@@ -41,9 +41,9 @@ func _give_starting_items() -> void:
 		var item: ItemData = ItemDatabase.get_item(id)
 		if item:
 			inv.add_item(item, 1)
-	var seed: ItemData = ItemDatabase.get_item(&"turnip_seed")
-	if seed:
-		inv.add_item(seed, 10)
+	var seed_item: ItemData = ItemDatabase.get_item(&"turnip_seed")
+	if seed_item:
+		inv.add_item(seed_item, 10)
 
 
 func _setup_decorations() -> void:
