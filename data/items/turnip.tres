@@ -1,0 +1,20 @@
+[gd_resource type="ItemData" load_steps=4 format=3]
+
+[ext_resource type="Script" uid="uid://c1krvdd6j621e" path="res://src/resources/item_data.gd" id="1_item"]
+[ext_resource type="Texture2D" path="res://assets/sprites/props/outdoor_decor.png" id="2_decor"]
+
+[sub_resource type="AtlasTexture" id="icon_turnip"]
+atlas = ExtResource("2_decor")
+region = Rect2(48, 0, 16, 16)
+filter_clip = true
+
+[resource]
+script = ExtResource("1_item")
+id = &"turnip"
+display_name = "Nabo"
+description = "Un nabo recién cosechado."
+icon = SubResource("icon_turnip")
+category = 1
+max_stack = 99
+sell_price = 20
+sellable = true

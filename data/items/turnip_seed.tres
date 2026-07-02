@@ -1,0 +1,22 @@
+[gd_resource type="ItemData" load_steps=5 format=3]
+
+[ext_resource type="Script" uid="uid://c1krvdd6j621e" path="res://src/resources/item_data.gd" id="1_item"]
+[ext_resource type="Resource" path="res://data/crops/turnip.tres" id="2_turnip_crop"]
+[ext_resource type="Texture2D" path="res://assets/sprites/props/outdoor_decor.png" id="3_decor"]
+
+[sub_resource type="AtlasTexture" id="icon_turnip_seed"]
+atlas = ExtResource("3_decor")
+region = Rect2(0, 0, 16, 16)
+filter_clip = true
+
+[resource]
+script = ExtResource("1_item")
+id = &"turnip_seed"
+display_name = "Semilla de Nabo"
+description = "Plántala en tierra labrada."
+icon = SubResource("icon_turnip_seed")
+category = 0
+max_stack = 99
+sell_price = 10
+sellable = false
+crop = ExtResource("2_turnip_crop")

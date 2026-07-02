@@ -1,0 +1,36 @@
+[gd_resource type="TileSet" format=3 uid="uid://bx5kjm43xr8d"]
+
+[ext_resource type="Texture2D" uid="uid://dgi26q3saeubr" path="res://assets/tilesets/grass_middle.png" id="1_wa1fj"]
+[ext_resource type="Texture2D" uid="uid://bx2lxmem364hr" path="res://assets/tilesets/farmland_tile.png" id="2_jy86n"]
+[ext_resource type="Texture2D" uid="uid://cppna7d3fe11n" path="res://assets/tilesets/path_middle.png" id="3_jqfi2"]
+[ext_resource type="Texture2D" uid="uid://dkkcusshiwlsk" path="res://assets/tilesets/water_middle.png" id="4_0k6ol"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_y5bxg"]
+texture = ExtResource("1_wa1fj")
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_qi755"]
+texture = ExtResource("2_jy86n")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_dapfk"]
+texture = ExtResource("3_jqfi2")
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_sqvhl"]
+texture = ExtResource("4_0k6ol")
+0:0/0 = 0
+
+[resource]
+sources/0 = SubResource("TileSetAtlasSource_y5bxg")
+sources/1 = SubResource("TileSetAtlasSource_qi755")
+sources/2 = SubResource("TileSetAtlasSource_dapfk")
+sources/3 = SubResource("TileSetAtlasSource_sqvhl")

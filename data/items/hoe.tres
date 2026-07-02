@@ -1,0 +1,13 @@
+[gd_resource type="ItemData" load_steps=2 format=3]
+
+[ext_resource type="Script" uid="uid://c1krvdd6j621e" path="res://src/resources/item_data.gd" id="1_item"]
+
+[resource]
+script = ExtResource("1_item")
+id = &"hoe"
+display_name = "Azada"
+description = "Para labrar la tierra."
+category = 2
+max_stack = 1
+sell_price = 0
+sellable = false

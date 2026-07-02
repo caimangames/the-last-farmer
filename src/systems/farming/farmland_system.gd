@@ -1,0 +1,243 @@
+extends Node
+class_name FarmlandSystem
+## Gestiona el estado de cada tile del huerto: labrado, regado, plantado y listo.
+##
+## farm.gd llama a setup() en su _ready() para pasar las referencias necesarias.
+## El sistema escucha EventBus.tool_used y EventBus.interact_tile para recibir
+## acciones del jugador sin acoplarse directamente al Player.
+
+enum State { UNTILLED, TILLED, PLANTED, READY }
+
+const SRC_GRASS    := 0
+const SRC_FARMLAND := 1
+
+var _ground: TileMapLayer
+var _watered_layer: TileMapLayer
+var _crop_layer: Node2D
+var _player: Player
+var _plot_origin: Vector2i
+var _plot_size: Vector2i
+## Vector2i → { state: int, crop_id: StringName, days_grown: int, watered: bool }
+var _tiles: Dictionary = {}
+
+
+func setup(
+	ground: TileMapLayer,
+	watered_layer: TileMapLayer,
+	crop_layer: Node2D,
+	player: Player,
+	plot_origin: Vector2i,
+	plot_size: Vector2i
+) -> void:
+	_ground = ground
+	_watered_layer = watered_layer
+	_crop_layer = crop_layer
+	_player = player
+	_plot_origin = plot_origin
+	_plot_size = plot_size
+	_init_tiles()
+	EventBus.tool_used.connect(_on_tool_used)
+	EventBus.interact_tile.connect(_on_interact_tile)
+	EventBus.day_ended.connect(_on_day_ended)
+
+
+func _init_tiles() -> void:
+	for ny in _plot_size.y:
+		for nx in _plot_size.x:
+			_tiles[_plot_origin + Vector2i(nx, ny)] = {
+				"state": State.UNTILLED,
+				"crop_id": &"",
+				"days_grown": 0,
+				"watered": false,
+			}
+
+
+# ---------------------------------------------------------------------------
+# Acciones públicas
+# ---------------------------------------------------------------------------
+
+func try_till(pos: Vector2i) -> bool:
+	var tile: Dictionary = _tiles.get(pos, {})
+	if tile.is_empty() or tile.state != State.UNTILLED:
+		return false
+	tile.state = State.TILLED
+	_update_ground(pos)
+	return true
+
+
+func try_water(pos: Vector2i) -> bool:
+	var tile: Dictionary = _tiles.get(pos, {})
+	if tile.is_empty() or tile.state == State.UNTILLED or tile.watered:
+		return false
+	tile.watered = true
+	_update_watered(pos, true)
+	return true
+
+
+func try_plant(pos: Vector2i, seed: ItemData) -> bool:
+	var tile: Dictionary = _tiles.get(pos, {})
+	if tile.is_empty() or tile.state != State.TILLED:
+		return false
+	if seed.crop == null:
+		return false
+	if not seed.crop.can_grow_in_season(TimeManager.season):
+		return false
+	if not _player.inventory.remove_item(seed, 1):
+		return false
+	tile.state = State.PLANTED
+	tile.crop_id = seed.crop.id
+	tile.days_grown = 0
+	_update_crop(pos)
+	EventBus.crop_planted.emit(seed.crop, pos)
+	return true
+
+
+func try_harvest(pos: Vector2i) -> bool:
+	var tile: Dictionary = _tiles.get(pos, {})
+	if tile.is_empty() or tile.state != State.READY:
+		return false
+	var crop: CropData = ItemDatabase.get_crop(tile.crop_id)
+	if crop == null or crop.harvest_item == null:
+		return false
+	var amount := randi_range(crop.harvest_min, crop.harvest_max)
+	_player.inventory.add_item(crop.harvest_item, amount)
+	EventBus.crop_harvested.emit(crop, pos)
+	tile.state = State.TILLED
+	tile.crop_id = &""
+	tile.days_grown = 0
+	tile.watered = false
+	_update_ground(pos)
+	_update_watered(pos, false)
+	_clear_crop(pos)
+	return true
+
+
+# ---------------------------------------------------------------------------
+# Señales del EventBus
+# ---------------------------------------------------------------------------
+
+func _on_tool_used(item: ItemData, world_pos: Vector2) -> void:
+	var pos := world_to_tile(world_pos)
+	if not _tiles.has(pos):
+		return
+	match item.category:
+		ItemData.Category.TOOL:
+			if item.id == &"hoe":
+				try_till(pos)
+			elif item.id == &"watering_can":
+				try_water(pos)
+		ItemData.Category.SEED:
+			try_plant(pos, item)
+
+
+func _on_interact_tile(world_pos: Vector2) -> void:
+	try_harvest(world_to_tile(world_pos))
+
+
+func _on_day_ended(day: int, season: int, _year: int) -> void:
+	for pos: Vector2i in _tiles:
+		var tile: Dictionary = _tiles[pos]
+		if tile.state == State.PLANTED and tile.watered:
+			tile.days_grown += 1
+			var crop: CropData = ItemDatabase.get_crop(tile.crop_id)
+			if crop != null and tile.days_grown >= crop.total_growth_days():
+				if crop.can_grow_in_season(season):
+					tile.state = State.READY
+			_update_crop(pos)
+		if tile.watered:
+			tile.watered = false
+			_update_watered(pos, false)
+	print("[FarmlandSystem] Día %d procesado." % day)
+
+
+# ---------------------------------------------------------------------------
+# Visuales
+# ---------------------------------------------------------------------------
+
+func world_to_tile(world_pos: Vector2) -> Vector2i:
+	return _ground.local_to_map(_ground.to_local(world_pos))
+
+
+func _update_ground(pos: Vector2i) -> void:
+	var tile: Dictionary = _tiles[pos]
+	if tile.state == State.UNTILLED:
+		_ground.set_cell(pos, SRC_GRASS, Vector2i.ZERO)
+	else:
+		var nx := pos.x - _plot_origin.x
+		var ny := pos.y - _plot_origin.y
+		_ground.set_cell(pos, SRC_FARMLAND, _farmland_coord(nx, ny))
+
+
+func _farmland_coord(nx: int, ny: int) -> Vector2i:
+	var col := 0 if nx == 0 else (2 if nx == _plot_size.x - 1 else 1)
+	var row := 0 if ny == 0 else (2 if ny == _plot_size.y - 1 else 1)
+	return Vector2i(col, row)
+
+
+func _update_watered(pos: Vector2i, watered: bool) -> void:
+	if watered:
+		_watered_layer.set_cell(pos, SRC_FARMLAND, Vector2i(1, 1))
+	else:
+		_watered_layer.erase_cell(pos)
+
+
+func _update_crop(pos: Vector2i) -> void:
+	_clear_crop(pos)
+	var tile: Dictionary = _tiles[pos]
+	if tile.state not in [State.PLANTED, State.READY]:
+		return
+	var crop: CropData = ItemDatabase.get_crop(tile.crop_id)
+	if crop == null or crop.stage_textures.is_empty():
+		return
+	var stage := _get_stage(tile, crop)
+	if stage >= crop.stage_textures.size():
+		return
+	var spr := Sprite2D.new()
+	spr.name = "c%d_%d" % [pos.x, pos.y]
+	spr.texture = crop.stage_textures[stage]
+	spr.global_position = _ground.to_global(_ground.map_to_local(pos))
+	_crop_layer.add_child(spr)
+
+
+func _clear_crop(pos: Vector2i) -> void:
+	var node := _crop_layer.get_node_or_null("c%d_%d" % [pos.x, pos.y])
+	if node:
+		node.queue_free()
+
+
+func _get_stage(tile: Dictionary, crop: CropData) -> int:
+	if tile.state == State.READY:
+		return crop.stage_textures.size() - 1
+	var elapsed := 0
+	for i in crop.growth_stages.size():
+		elapsed += crop.growth_stages[i]
+		if tile.days_grown < elapsed:
+			return i
+	return crop.stage_textures.size() - 1
+
+
+# ---------------------------------------------------------------------------
+# Guardado
+# ---------------------------------------------------------------------------
+
+func to_dict() -> Dictionary:
+	var out: Dictionary = {}
+	for pos: Vector2i in _tiles:
+		var t: Dictionary = _tiles[pos].duplicate()
+		t.crop_id = str(t.crop_id)
+		out["%d,%d" % [pos.x, pos.y]] = t
+	return out
+
+
+func from_dict(data: Dictionary) -> void:
+	for key: String in data:
+		var parts := key.split(",")
+		var pos := Vector2i(int(parts[0]), int(parts[1]))
+		if not _tiles.has(pos):
+			continue
+		var d: Dictionary = data[key]
+		d.crop_id = StringName(d.get("crop_id", ""))
+		_tiles[pos] = d
+		_update_ground(pos)
+		_update_watered(pos, d.get("watered", false))
+		_update_crop(pos)

@@ -1,0 +1,32 @@
+[gd_resource type="CropData" load_steps=6 format=3]
+
+[ext_resource type="Script" uid="uid://b5j6uia2eds3r" path="res://src/resources/crop_data.gd" id="1_crop"]
+[ext_resource type="Resource" path="res://data/items/turnip.tres" id="2_turnip_item"]
+[ext_resource type="Texture2D" path="res://assets/sprites/props/outdoor_decor.png" id="3_decor"]
+
+[sub_resource type="AtlasTexture" id="stage_0"]
+atlas = ExtResource("3_decor")
+region = Rect2(0, 0, 16, 16)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="stage_1"]
+atlas = ExtResource("3_decor")
+region = Rect2(16, 0, 16, 16)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="stage_ready"]
+atlas = ExtResource("3_decor")
+region = Rect2(48, 0, 16, 16)
+filter_clip = true
+
+[resource]
+script = ExtResource("1_crop")
+id = &"turnip"
+display_name = "Nabo"
+growth_stages = Array[int]([2, 2])
+stage_textures = Array[Texture2D]([SubResource("stage_0"), SubResource("stage_1"), SubResource("stage_ready")])
+valid_seasons = Array[int]([0])
+harvest_item = ExtResource("2_turnip_item")
+harvest_min = 1
+harvest_max = 3
+regrowth_days = 0
