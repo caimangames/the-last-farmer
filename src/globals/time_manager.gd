@@ -96,3 +96,4 @@ func from_dict(data: Dictionary) -> void:
 	day = data.get("day", 1)
 	season = data.get("season", Season.SPRING) as Season
 	year = data.get("year", 1)
+	EventBus.hour_changed.emit(hour, minute)

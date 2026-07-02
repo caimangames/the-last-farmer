@@ -17,6 +17,10 @@ var flags: Dictionary = {}
 ## Referencia al inventario del jugador (se asigna al iniciar la partida).
 var inventory: Object = null
 
+## True mientras farm.gd debe cargar una partida guardada en vez de repartir
+## los ítems iniciales. Lo fija main.gd, no se persiste.
+var loading_save: bool = false
+
 
 func add_gold(amount: int) -> void:
 	gold += amount
@@ -53,6 +57,7 @@ func to_dict() -> Dictionary:
 		"farm_name": farm_name,
 		"gold": gold,
 		"flags": flags,
+		"inventory": inventory.to_dict() if inventory != null else {},
 	}
 
 
@@ -61,3 +66,6 @@ func from_dict(data: Dictionary) -> void:
 	farm_name = data.get("farm_name", farm_name)
 	gold = data.get("gold", STARTING_GOLD)
 	flags = data.get("flags", {})
+	if inventory != null:
+		inventory.from_dict(data.get("inventory", {}))
+	EventBus.gold_changed.emit(gold, 0)

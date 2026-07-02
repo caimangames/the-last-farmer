@@ -18,7 +18,12 @@ const PLOT_SIZE   := Vector2i(8, 6)
 func _ready() -> void:
 	_paint_grass()
 	_farmland.setup(_ground, _watered_layer, _crop_layer, _player, PLOT_ORIGIN, PLOT_SIZE)
-	_give_starting_items()
+	if GameState.loading_save:
+		GameState.loading_save = false
+		SaveManager.load_game()
+		EventBus.game_paused.emit(false)
+	else:
+		_give_starting_items()
 	_setup_decorations()
 	_hud.setup(_player)
 	print("[Farm] Granja cargada. Día %d, %s." % [TimeManager.day, TimeManager.get_time_string()])

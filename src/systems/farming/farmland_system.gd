@@ -29,6 +29,7 @@ func setup(
 	plot_origin: Vector2i,
 	plot_size: Vector2i
 ) -> void:
+	add_to_group(&"farmland")
 	_ground = ground
 	_watered_layer = watered_layer
 	_crop_layer = crop_layer
