@@ -39,7 +39,11 @@
 ### 1.4 Plataformas y alcance del MVP
 - Motor: Godot
 - Plataformas objetivo: _pendiente_
-- Alcance del MVP: _pendiente_
+- Alcance del MVP: bucle completo labrar → plantar → regar → crecer → cosechar → vender →
+  dormir → siguiente día; energía/estamina; guardado fiable (inventario y estado de la tierra
+  incluidos); economía básica (venta de cosechas); un NPC con diálogo y gancho narrativo
+  inicial; menús de inicio y pausa.
+  Desglose de milestones e implementación en [`docs/ROADMAP_MVP.md`](ROADMAP_MVP.md).
 
 ---
 
@@ -158,6 +162,10 @@
 | Itch.io | Primera versión pública | Build jugable |
 | Early Access Steam | Contenido ampliado | Trailer + demo |
 | Kickstarter | Financiamiento | Pitch + prototipo pulido |
+
+El desglose de milestones de ingeniería para llegar al MVP (M0-M8, con archivos, señales de
+`EventBus` a reutilizar y criterios de "hecho" por milestone) vive en
+[`docs/ROADMAP_MVP.md`](ROADMAP_MVP.md).
 
 ---
 
