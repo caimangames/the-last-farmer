@@ -32,6 +32,20 @@ mouse_filter = 2
 horizontal_alignment = 2
 text = "Oro: 500"
 
+[node name="EnergyPanel" type="PanelContainer" parent="."]
+offset_left = 8.0
+offset_top = 34.0
+offset_right = 160.0
+offset_bottom = 56.0
+mouse_filter = 2
+
+[node name="EnergyBar" type="ProgressBar" parent="EnergyPanel"]
+layout_mode = 2
+min_value = 0.0
+max_value = 100.0
+value = 100.0
+show_percentage = false
+
 [node name="Hotbar" type="HBoxContainer" parent="."]
 anchor_left = 0.5
 anchor_right = 0.5

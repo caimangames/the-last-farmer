@@ -21,6 +21,7 @@ var _slot_counts: Array[Label] = []
 
 @onready var _time_label: Label = $TopLeft/TimeLabel
 @onready var _gold_label: Label = $TopRight/GoldLabel
+@onready var _energy_bar: ProgressBar = $EnergyPanel/EnergyBar
 @onready var _hotbar: HBoxContainer = $Hotbar
 
 
@@ -28,10 +29,12 @@ func _ready() -> void:
 	_build_hotbar()
 	_update_time()
 	_update_gold(GameState.gold, 0)
+	_update_energy(GameState.energy, 0)
 
 	EventBus.day_started.connect(func(_d, _s, _y): _update_time())
 	EventBus.hour_changed.connect(func(_h, _m): _update_time())
 	EventBus.gold_changed.connect(_update_gold)
+	EventBus.energy_changed.connect(_update_energy)
 	EventBus.inventory_changed.connect(_refresh_hotbar)
 	EventBus.active_slot_changed.connect(_on_active_slot_changed)
 
@@ -135,3 +138,8 @@ func _update_time() -> void:
 
 func _update_gold(new_total: int, _delta: int) -> void:
 	_gold_label.text = "Oro: %d" % new_total
+
+
+func _update_energy(new_total: int, _delta: int) -> void:
+	_energy_bar.max_value = GameState.max_energy
+	_energy_bar.value = new_total

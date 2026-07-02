@@ -27,6 +27,19 @@ func _ready() -> void:
 	EventBus.game_paused.connect(func(p): _paused = p)
 
 
+## Dormir voluntariamente: cierra el día actual y arranca el siguiente.
+## Provisional hasta que exista una cama/casa interactuable (M7): se dispara
+## con la acción "sleep" mientras el reloj corre.
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("sleep") and not _paused:
+		sleep()
+
+
+func sleep() -> void:
+	end_day()
+	start_day()
+
+
 func _process(delta: float) -> void:
 	if _paused:
 		return
@@ -40,6 +53,7 @@ func start_day() -> void:
 	_paused = false
 	hour = START_HOUR
 	minute = 0
+	GameState.restore_energy()
 	EventBus.day_started.emit(day, season, year)
 
 

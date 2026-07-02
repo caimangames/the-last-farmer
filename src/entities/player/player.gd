@@ -1,6 +1,8 @@
 extends CharacterBody2D
 class_name Player
 
+const ENERGY_COST_PER_TOOL_USE: int = 2
+
 @export var move_speed: float = 90.0
 @export var inventory_size: int = 24
 
@@ -98,4 +100,5 @@ func _try_use_tool() -> void:
 	var item := get_active_item()
 	if item == null:
 		return
+	GameState.spend_energy(ENERGY_COST_PER_TOOL_USE)
 	EventBus.tool_used.emit(item, get_global_mouse_position())
