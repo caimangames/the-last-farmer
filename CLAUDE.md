@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-"The Last Farmer" — a Stardew Valley-style 2D top-down farm sim built with **Godot 4.6** (GDScript, GL Compatibility renderer). Solo dev project; docs (design, roadmap) are written in Spanish, code comments are in Spanish, this file is in English for tooling consistency.
+"The Last Farmer" — a Stardew Valley-style 2D top-down farm sim built with **Godot 4.6** (GDScript, GL Compatibility renderer). Solo dev project; all docs, code comments, and player-facing text are written in English.
 
 - `docs/GDD.md` — game design doc (mostly `_Pendiente_`/TBD placeholders; check before assuming a mechanic is decided).
 - `docs/ROADMAP_MVP.md` — the actual engineering plan: milestones M0–M8 toward a playable MVP loop (till → plant → water → grow → harvest → sell → sleep → next day). **Read this before starting any feature work** — it names exact files, functions, and EventBus signals to wire up, and which ones already exist but are unused/unconnected.

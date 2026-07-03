@@ -1,15 +1,15 @@
 extends CanvasLayer
-## HUD básico: reloj/día, oro y hotbar del inventario activo.
+## Basic HUD: clock/day, gold, and active inventory hotbar.
 ##
-## farm.gd llama a setup(player) en su _ready() para conectar la hotbar
-## al inventario del jugador. El reloj y el oro se actualizan solo mirando
-## el EventBus, sin depender del Player.
+## farm.gd calls setup(player) in its _ready() to connect the hotbar
+## to the player's inventory. The clock and gold update just by watching
+## the EventBus, without depending on the Player.
 
 const SLOT_COUNT: int = 9
 const SLOT_SIZE: int = 34
 const ACTIVE_BORDER: Color = Color(1.0, 0.85, 0.3, 1.0)
 const IDLE_BORDER: Color = Color(0.0, 0.0, 0.0, 0.8)
-const SEASON_NAMES: Array[String] = ["Primavera", "Verano", "Otoño", "Invierno"]
+const SEASON_NAMES: Array[String] = ["Spring", "Summer", "Fall", "Winter"]
 
 var _player: Player
 var _active_slot: int = 0
@@ -44,7 +44,7 @@ func _ready() -> void:
 	_toast_timer.timeout.connect(func(): _toast.visible = false)
 
 
-## Llamado por farm.gd para enlazar la hotbar al inventario del jugador.
+## Called by farm.gd to bind the hotbar to the player's inventory.
 func setup(player: Player) -> void:
 	_player = player
 	_active_slot = player.active_slot
@@ -134,7 +134,7 @@ func _update_active_visual() -> void:
 
 
 func _update_time() -> void:
-	_time_label.text = "Día %d — %s — %s" % [
+	_time_label.text = "Day %d — %s — %s" % [
 		TimeManager.day,
 		SEASON_NAMES[TimeManager.season],
 		TimeManager.get_time_string(),
@@ -142,7 +142,7 @@ func _update_time() -> void:
 
 
 func _update_gold(new_total: int, _delta: int) -> void:
-	_gold_label.text = "Oro: %d" % new_total
+	_gold_label.text = "Gold: %d" % new_total
 
 
 func _update_energy(new_total: int, _delta: int) -> void:

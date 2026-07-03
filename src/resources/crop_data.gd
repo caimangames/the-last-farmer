@@ -1,30 +1,30 @@
 extends Resource
 class_name CropData
-## Definición de un cultivo: cuánto tarda en crecer, en qué estación y qué produce.
+## Definition of a crop: how long it takes to grow, in which season, and what it produces.
 ##
-## Cada cultivo concreto vive como un .tres en res://data/crops/.
+## Each concrete crop lives as a .tres in res://data/crops/.
 
 @export var id: StringName
 @export var display_name: String = ""
 
-## Días que tarda cada fase de crecimiento. El total de días = suma del array.
-## El tamaño del array determina el número de fases de sprite.
+## Days each growth stage takes. Total days = sum of the array.
+## The array's size determines the number of sprite stages.
 @export var growth_stages: Array[int] = [1, 2, 2, 2]
 
-## Texturas para cada fase (debe coincidir en tamaño con growth_stages + 1
-## si se incluye la fase "muerta/seca").
+## Textures for each stage (must match growth_stages in size + 1
+## if the "dead/withered" stage is included).
 @export var stage_textures: Array[Texture2D] = []
 
-## Estaciones en las que el cultivo puede crecer (usa TimeManager.Season).
+## Seasons in which the crop can grow (uses TimeManager.Season).
 @export var valid_seasons: Array[int] = []
 
-## Objeto que se obtiene al cosechar.
+## Item obtained when harvesting.
 @export var harvest_item: ItemData
 @export var harvest_min: int = 1
 @export var harvest_max: int = 1
 
-## Si es > 0, tras cosechar el cultivo vuelve a esta fase en lugar de morir
-## (cultivos regrowables como las fresas). 0 = cultivo de una sola cosecha.
+## If > 0, after harvesting the crop returns to this stage instead of dying
+## (regrowable crops like strawberries). 0 = single-harvest crop.
 @export var regrowth_days: int = 0
 
 

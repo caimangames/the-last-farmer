@@ -1,9 +1,9 @@
 extends RefCounted
 class_name Inventory
-## Contenedor de objetos con apilado automático.
+## Container of items with automatic stacking.
 ##
-## No es un nodo: es un objeto de datos que el jugador (u un cofre) posee.
-## Emite a través del EventBus para que la UI se refresque sin acoplarse.
+## Not a node: it's a data object owned by the player (or a chest).
+## Emits through the EventBus so the UI can refresh without coupling.
 
 var slots: Array[InventorySlot] = []
 var size: int = 24
@@ -15,18 +15,18 @@ func _init(slot_count: int = 24) -> void:
 		slots.append(InventorySlot.new())
 
 
-## Añade objetos, apilando en slots existentes primero. Devuelve lo que NO cupo.
+## Adds items, stacking into existing slots first. Returns what did NOT fit.
 func add_item(item: ItemData, count: int) -> int:
 	var remaining: int = count
 
-	# 1) Rellenar pilas existentes del mismo objeto.
+	# 1) Fill existing stacks of the same item.
 	for slot in slots:
 		if remaining <= 0:
 			break
 		if not slot.is_empty() and slot.item == item:
 			remaining = slot.add(item, remaining)
 
-	# 2) Usar slots vacíos.
+	# 2) Use empty slots.
 	for slot in slots:
 		if remaining <= 0:
 			break
@@ -40,7 +40,7 @@ func add_item(item: ItemData, count: int) -> int:
 	return remaining
 
 
-## Quita objetos repartidos por varios slots. Devuelve true si había suficientes.
+## Removes items spread across several slots. Returns true if there were enough.
 func remove_item(item: ItemData, count: int) -> bool:
 	if count_of(item) < count:
 		return false
@@ -72,7 +72,7 @@ func has_item(item: ItemData, count: int = 1) -> bool:
 
 
 # ---------------------------------------------------------------------------
-# Guardado
+# Saving
 # ---------------------------------------------------------------------------
 
 func to_dict() -> Dictionary:

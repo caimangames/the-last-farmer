@@ -1,9 +1,9 @@
 extends Node
-## Punto de entrada del juego (main_scene en project.godot).
+## Entry point of the game (main_scene in project.godot).
 ##
-## Si existe una partida guardada, la continúa; si no, arranca una nueva.
-## Más adelante esto será un menú principal con opciones de Nueva partida /
-## Continuar / Ajustes (M7).
+## If a saved game exists, continues it; otherwise starts a new one.
+## Later this will become a main menu with New Game / Continue / Settings
+## options (M7).
 
 func _ready() -> void:
 	if SaveManager.has_save():

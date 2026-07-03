@@ -1,28 +1,28 @@
 extends Node
-## Estado global de la partida en curso.
+## Global state of the current playthrough.
 ##
-## Contiene los datos "vivos" del jugador que deben persistir entre escenas
-## y guardarse en disco: oro, inventario, banderas de progreso, etc.
-## Es deliberadamente simple: la lógica vive en los sistemas, aquí solo el dato.
+## Holds the "live" player data that must persist between scenes and be
+## saved to disk: gold, inventory, progress flags, etc.
+## Deliberately simple: logic lives in the systems, only data lives here.
 
 const STARTING_GOLD: int = 500
 const STARTING_ENERGY: int = 100
 
-var player_name: String = "Granjero"
-var farm_name: String = "Sin Nombre"
+var player_name: String = "Farmer"
+var farm_name: String = "Unnamed"
 var gold: int = STARTING_GOLD
 
 var energy: int = STARTING_ENERGY
 var max_energy: int = STARTING_ENERGY
 
-## Banderas de progreso de la historia / desbloqueos. Ej: {"barn_built": true}
+## Story progress flags / unlocks. E.g.: {"barn_built": true}
 var flags: Dictionary = {}
 
-## Referencia al inventario del jugador (se asigna al iniciar la partida).
+## Reference to the player's inventory (assigned when the game starts).
 var inventory: Object = null
 
-## True mientras farm.gd debe cargar una partida guardada en vez de repartir
-## los ítems iniciales. Lo fija main.gd, no se persiste.
+## True while farm.gd should load a saved game instead of handing out
+## the starting items. Set by main.gd, not persisted.
 var loading_save: bool = false
 
 
@@ -39,7 +39,7 @@ func spend_gold(amount: int) -> bool:
 	return true
 
 
-## Descuenta energía sin bajar de 0 (no bloquea la acción que la gasta).
+## Deducts energy without going below 0 (does not block the action that spends it).
 func spend_energy(amount: int) -> void:
 	var new_energy: int = max(0, energy - amount)
 	var delta: int = new_energy - energy
@@ -47,7 +47,7 @@ func spend_energy(amount: int) -> void:
 	EventBus.energy_changed.emit(energy, delta)
 
 
-## Repone la energía al máximo, típicamente al empezar el día.
+## Restores energy to max, typically at the start of the day.
 func restore_energy() -> void:
 	var delta: int = max_energy - energy
 	energy = max_energy
@@ -62,7 +62,7 @@ func has_flag(key: String) -> bool:
 	return flags.get(key, false)
 
 
-## Reinicia el estado para una partida nueva.
+## Resets the state for a new playthrough.
 func reset() -> void:
 	gold = STARTING_GOLD
 	energy = STARTING_ENERGY
@@ -71,7 +71,7 @@ func reset() -> void:
 	inventory = null
 
 
-## Serializa el estado para guardarlo.
+## Serializes the state for saving.
 func to_dict() -> Dictionary:
 	return {
 		"player_name": player_name,

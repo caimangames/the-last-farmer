@@ -92,7 +92,7 @@ func _try_interact() -> void:
 			area.interact(self)
 			EventBus.interaction_started.emit(area)
 			return
-	# Sin interactuable cercano: intentar cosechar el tile bajo el jugador.
+	# No nearby interactable: try to harvest the tile under the player.
 	EventBus.interact_tile.emit(global_position)
 
 

@@ -1,7 +1,7 @@
 extends SceneTree
-## Genera el SpriteFrames del jugador a partir del spritesheet 192×320 (6×10 de 32×32).
+## Generates the player's SpriteFrames from the 192x320 spritesheet (6x10 of 32x32).
 ##
-## Ejecución:
+## Run:
 ##   godot --headless --path . --script res://tools/build_player_spriteframes.gd
 
 const FW := 32
@@ -9,7 +9,7 @@ const FH := 32
 const SOURCE := "res://assets/sprites/characters/player.png"
 const OUTPUT := "res://assets/sprites/characters/player_frames.tres"
 
-# [nombre, fila, col_inicio, num_frames, fps, loop]
+# [name, row, start_col, num_frames, fps, loop]
 const ANIM_DEF := [
 	["idle_down",  1, 0, 6, 4.0,  true],
 	["idle_up",    2, 0, 6, 4.0,  true],
@@ -23,7 +23,7 @@ const ANIM_DEF := [
 func _initialize() -> void:
 	var tex: Texture2D = load(SOURCE)
 	if tex == null:
-		push_error("No se pudo cargar %s" % SOURCE)
+		push_error("Could not load %s" % SOURCE)
 		quit(1)
 		return
 
@@ -49,11 +49,11 @@ func _initialize() -> void:
 			atlas.region = Rect2(col * FW, row * FH, FW, FH)
 			frames.add_frame(anim_name, atlas)
 
-		print("  %-12s  fila %d  %d frames  %.0f fps" % [anim_name, row, count, fps])
+		print("  %-12s  row %d  %d frames  %.0f fps" % [anim_name, row, count, fps])
 
 	var err := ResourceSaver.save(frames, OUTPUT)
 	if err == OK:
-		print("SpriteFrames → %s" % OUTPUT)
+		print("SpriteFrames -> %s" % OUTPUT)
 	else:
-		push_error("Error al guardar SpriteFrames: %d" % err)
+		push_error("Error saving SpriteFrames: %d" % err)
 	quit()

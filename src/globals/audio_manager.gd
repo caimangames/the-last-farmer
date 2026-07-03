@@ -1,9 +1,9 @@
 extends Node
-## Reproducción centralizada de música y efectos de sonido.
+## Centralized playback of music and sound effects.
 ##
-## Mantiene un pool de reproductores para SFX simultáneos y un único reproductor
-## de música con crossfade básico. Los buses "Music" y "SFX" deben existir en
-## el Audio Bus Layout del proyecto para controlar el volumen por separado.
+## Keeps a pool of players for simultaneous SFX and a single music player
+## with basic crossfade. The "Music" and "SFX" buses must exist in the
+## project's Audio Bus Layout so their volume can be controlled separately.
 
 const SFX_POOL_SIZE: int = 8
 

@@ -1,21 +1,21 @@
 extends Node
-## Bus de eventos global (patrón pub/sub).
+## Global event bus (pub/sub pattern).
 ##
-## Permite que sistemas distintos se comuniquen sin conocerse entre sí.
-## En lugar de que el inventario tenga una referencia directa a la HUD,
-## ambos hablan a través de este bus:
-##   EventBus.item_collected.emit(item, 1)   # lo emite el mundo
-##   EventBus.item_collected.connect(...)     # lo escucha la HUD
+## Lets unrelated systems communicate without knowing about each other.
+## Instead of the inventory holding a direct reference to the HUD,
+## both talk through this bus:
+##   EventBus.item_collected.emit(item, 1)   # emitted by the world
+##   EventBus.item_collected.connect(...)     # listened to by the HUD
 ##
-## Mantén las señales agrupadas por dominio y documentadas.
+## Keep signals grouped by domain and documented.
 
-# --- Tiempo / Calendario ---
+# --- Time / Calendar ---
 signal day_started(day: int, season: int, year: int)
 signal day_ended(day: int, season: int, year: int)
 signal hour_changed(hour: int, minute: int)
 signal season_changed(season: int)
 
-# --- Jugador / Inventario ---
+# --- Player / Inventory ---
 signal item_collected(item: ItemData, amount: int)
 signal item_removed(item: ItemData, amount: int)
 signal inventory_changed
@@ -24,18 +24,18 @@ signal gold_changed(new_total: int, delta: int)
 signal energy_changed(new_total: int, delta: int)
 signal tool_used(tool: ItemData, world_position: Vector2)
 
-# --- Granja / Cultivos ---
+# --- Farm / Crops ---
 signal crop_planted(crop: CropData, tile: Vector2i)
 signal crop_watered(tile: Vector2i)
 signal crop_harvested(crop: CropData, tile: Vector2i)
 
-# --- Interacción / Diálogo ---
+# --- Interaction / Dialogue ---
 signal interaction_started(interactable: Node)
 signal interact_tile(world_position: Vector2)
 signal dialogue_requested(dialogue_id: String)
 signal dialogue_finished(dialogue_id: String)
 
-# --- Flujo de juego / UI ---
+# --- Game flow / UI ---
 signal game_paused(is_paused: bool)
 signal scene_transition_started(target_scene: String)
 signal scene_transition_finished(target_scene: String)

@@ -1,14 +1,14 @@
 extends Area2D
 class_name Interactable
-## Clase base para cualquier cosa con la que el jugador pueda interactuar:
-## NPCs, cofres, puertas, carteles...
+## Base class for anything the player can interact with:
+## NPCs, chests, doors, signs...
 ##
-## Extiende esta clase y sobrescribe `interact()` con el comportamiento concreto.
+## Extend this class and override `interact()` with the concrete behavior.
 
-## Texto que la UI puede mostrar como pista ("Pulsa E para hablar").
-@export var prompt: String = "Interactuar"
+## Text the UI can show as a hint ("Press E to talk").
+@export var prompt: String = "Interact"
 
 
-## Llamado por el Player cuando pulsa el botón de interacción estando cerca.
+## Called by the Player when they press the interact button while nearby.
 func interact(_player: Player) -> void:
-	push_warning("Interactable '%s' no implementa interact()." % name)
+	push_warning("Interactable '%s' does not implement interact()." % name)
