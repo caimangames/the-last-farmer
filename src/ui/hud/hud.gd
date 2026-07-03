@@ -23,6 +23,9 @@ var _slot_counts: Array[Label] = []
 @onready var _gold_label: Label = $TopRight/GoldLabel
 @onready var _energy_bar: ProgressBar = $EnergyPanel/EnergyBar
 @onready var _hotbar: HBoxContainer = $Hotbar
+@onready var _toast: PanelContainer = $Toast
+@onready var _toast_label: Label = $Toast/ToastLabel
+@onready var _toast_timer: Timer = $ToastTimer
 
 
 func _ready() -> void:
@@ -37,6 +40,8 @@ func _ready() -> void:
 	EventBus.energy_changed.connect(_update_energy)
 	EventBus.inventory_changed.connect(_refresh_hotbar)
 	EventBus.active_slot_changed.connect(_on_active_slot_changed)
+	EventBus.notification_requested.connect(_show_toast)
+	_toast_timer.timeout.connect(func(): _toast.visible = false)
 
 
 ## Llamado por farm.gd para enlazar la hotbar al inventario del jugador.
@@ -143,3 +148,9 @@ func _update_gold(new_total: int, _delta: int) -> void:
 func _update_energy(new_total: int, _delta: int) -> void:
 	_energy_bar.max_value = GameState.max_energy
 	_energy_bar.value = new_total
+
+
+func _show_toast(text: String) -> void:
+	_toast_label.text = text
+	_toast.visible = true
+	_toast_timer.start()

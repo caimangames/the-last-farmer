@@ -6,7 +6,7 @@ class_name FarmlandSystem
 ## El sistema escucha EventBus.tool_used y EventBus.interact_tile para recibir
 ## acciones del jugador sin acoplarse directamente al Player.
 
-enum State { UNTILLED, TILLED, PLANTED, READY }
+enum State { UNTILLED, TILLED, PLANTED, READY, WITHERED }
 
 const SRC_GRASS    := 0
 const SRC_FARMLAND := 1
@@ -59,19 +59,23 @@ func _init_tiles() -> void:
 
 func try_till(pos: Vector2i) -> bool:
 	var tile: Dictionary = _tiles.get(pos, {})
-	if tile.is_empty() or tile.state != State.UNTILLED:
+	if tile.is_empty() or (tile.state != State.UNTILLED and tile.state != State.WITHERED):
 		return false
 	tile.state = State.TILLED
+	tile.crop_id = &""
+	tile.days_grown = 0
+	_clear_crop(pos)
 	_update_ground(pos)
 	return true
 
 
 func try_water(pos: Vector2i) -> bool:
 	var tile: Dictionary = _tiles.get(pos, {})
-	if tile.is_empty() or tile.state == State.UNTILLED or tile.watered:
+	if tile.is_empty() or tile.state in [State.UNTILLED, State.WITHERED] or tile.watered:
 		return false
 	tile.watered = true
 	_update_watered(pos, true)
+	EventBus.crop_watered.emit(pos)
 	return true
 
 
@@ -82,6 +86,9 @@ func try_plant(pos: Vector2i, seed_item: ItemData) -> bool:
 	if seed_item.crop == null:
 		return false
 	if not seed_item.crop.can_grow_in_season(TimeManager.season):
+		EventBus.notification_requested.emit(
+			"%s no crece en esta estación." % seed_item.crop.display_name
+		)
 		return false
 	if not _player.inventory.remove_item(seed_item, 1):
 		return false
@@ -103,13 +110,22 @@ func try_harvest(pos: Vector2i) -> bool:
 	var amount := randi_range(crop.harvest_min, crop.harvest_max)
 	_player.inventory.add_item(crop.harvest_item, amount)
 	EventBus.crop_harvested.emit(crop, pos)
-	tile.state = State.TILLED
-	tile.crop_id = &""
-	tile.days_grown = 0
-	tile.watered = false
-	_update_ground(pos)
-	_update_watered(pos, false)
-	_clear_crop(pos)
+	EventBus.notification_requested.emit("+%d %s" % [amount, crop.harvest_item.display_name])
+	if crop.regrowth_days > 0:
+		## Cosecha múltiple: vuelve a una fase anterior en vez de morir.
+		tile.state = State.PLANTED
+		tile.days_grown = max(0, crop.total_growth_days() - crop.regrowth_days)
+		tile.watered = false
+		_update_watered(pos, false)
+		_update_crop(pos)
+	else:
+		tile.state = State.TILLED
+		tile.crop_id = &""
+		tile.days_grown = 0
+		tile.watered = false
+		_update_ground(pos)
+		_update_watered(pos, false)
+		_clear_crop(pos)
 	return true
 
 
@@ -138,13 +154,18 @@ func _on_interact_tile(world_pos: Vector2) -> void:
 func _on_day_ended(day: int, season: int, _year: int) -> void:
 	for pos: Vector2i in _tiles:
 		var tile: Dictionary = _tiles[pos]
-		if tile.state == State.PLANTED and tile.watered:
-			tile.days_grown += 1
-			var crop: CropData = ItemDatabase.get_crop(tile.crop_id)
-			if crop != null and tile.days_grown >= crop.total_growth_days():
-				if crop.can_grow_in_season(season):
-					tile.state = State.READY
-			_update_crop(pos)
+		if tile.state == State.PLANTED:
+			if tile.watered:
+				tile.days_grown += 1
+				var crop: CropData = ItemDatabase.get_crop(tile.crop_id)
+				if crop != null and tile.days_grown >= crop.total_growth_days():
+					if crop.can_grow_in_season(season):
+						tile.state = State.READY
+				_update_crop(pos)
+			else:
+				## Sin riego un día entero: el cultivo se marchita.
+				tile.state = State.WITHERED
+				_update_crop(pos)
 		if tile.watered:
 			tile.watered = false
 			_update_watered(pos, false)
@@ -185,7 +206,7 @@ func _update_watered(pos: Vector2i, watered: bool) -> void:
 func _update_crop(pos: Vector2i) -> void:
 	_clear_crop(pos)
 	var tile: Dictionary = _tiles[pos]
-	if tile.state not in [State.PLANTED, State.READY]:
+	if tile.state not in [State.PLANTED, State.READY, State.WITHERED]:
 		return
 	var crop: CropData = ItemDatabase.get_crop(tile.crop_id)
 	if crop == null or crop.stage_textures.is_empty():
@@ -197,7 +218,18 @@ func _update_crop(pos: Vector2i) -> void:
 	spr.name = "c%d_%d" % [pos.x, pos.y]
 	spr.texture = crop.stage_textures[stage]
 	spr.global_position = _ground.to_global(_ground.map_to_local(pos))
+	if tile.state == State.WITHERED:
+		spr.modulate = Color(0.45, 0.4, 0.35)
 	_crop_layer.add_child(spr)
+	if tile.state == State.PLANTED and tile.days_grown == 0:
+		_play_pop(spr)
+
+
+func _play_pop(spr: Sprite2D) -> void:
+	spr.scale = Vector2(0.2, 0.2)
+	var tween := create_tween()
+	tween.tween_property(spr, "scale", Vector2.ONE, 0.25) \
+		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 
 func _clear_crop(pos: Vector2i) -> void:
