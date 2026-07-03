@@ -69,3 +69,34 @@ func count_of(item: ItemData) -> int:
 
 func has_item(item: ItemData, count: int = 1) -> bool:
 	return count_of(item) >= count
+
+
+# ---------------------------------------------------------------------------
+# Guardado
+# ---------------------------------------------------------------------------
+
+func to_dict() -> Dictionary:
+	var slot_data: Array = []
+	for slot in slots:
+		if slot.is_empty():
+			slot_data.append(null)
+		else:
+			slot_data.append({"item_id": str(slot.item.id), "amount": slot.amount})
+	return {"slots": slot_data}
+
+
+func from_dict(data: Dictionary) -> void:
+	var slot_data: Array = data.get("slots", [])
+	for i in size:
+		var slot: InventorySlot = slots[i]
+		slot.clear()
+		if i >= slot_data.size():
+			continue
+		var entry: Variant = slot_data[i]
+		if entry == null:
+			continue
+		var item: ItemData = ItemDatabase.get_item(StringName(entry.get("item_id", "")))
+		if item != null:
+			slot.item = item
+			slot.amount = entry.get("amount", 0)
+	EventBus.inventory_changed.emit()
