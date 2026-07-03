@@ -1,17 +1,17 @@
 extends SceneTree
-## Herramienta de un solo uso: genera el TileSet del suelo de la granja.
+## One-shot tool: generates the farm ground TileSet.
 ##
-## Se ejecuta en modo headless:
+## Run in headless mode:
 ##   godot --headless --path . --script res://tools/build_ground_tileset.gd
 ##
-## Construir un TileSet a mano en .tres es propenso a errores; dejar que Godot
-## lo serialice garantiza un recurso válido. Vuelve a ejecutarlo si cambian los
-## tiles base.
+## Building a TileSet by hand in .tres is error-prone; letting Godot
+## serialize it guarantees a valid resource. Re-run it if the base
+## tiles change.
 
 const TILE_SIZE := Vector2i(16, 16)
 const OUTPUT := "res://assets/tilesets/ground_tileset.tres"
 
-# Cada entrada: textura base y rejilla de tiles (columnas x filas) a registrar.
+# Each entry: base texture and tile grid (columns x rows) to register.
 const SOURCES := [
 	{"id": 0, "path": "res://assets/tilesets/grass_middle.png", "cols": 1, "rows": 1},
 	{"id": 1, "path": "res://assets/tilesets/farmland_tile.png", "cols": 3, "rows": 3},
@@ -27,7 +27,7 @@ func _initialize() -> void:
 	for entry in SOURCES:
 		var tex: Texture2D = load(entry["path"])
 		if tex == null:
-			push_error("No se pudo cargar %s" % entry["path"])
+			push_error("Could not load %s" % entry["path"])
 			continue
 		var source := TileSetAtlasSource.new()
 		source.texture = tex
@@ -36,12 +36,12 @@ func _initialize() -> void:
 			for x in entry["cols"]:
 				source.create_tile(Vector2i(x, y))
 		tile_set.add_source(source, entry["id"])
-		print("Fuente %d: %s (%dx%d tiles)" % [entry["id"], entry["path"], entry["cols"], entry["rows"]])
+		print("Source %d: %s (%dx%d tiles)" % [entry["id"], entry["path"], entry["cols"], entry["rows"]])
 
 	var err := ResourceSaver.save(tile_set, OUTPUT)
 	if err == OK:
-		print("TileSet guardado en %s" % OUTPUT)
+		print("TileSet saved to %s" % OUTPUT)
 	else:
-		push_error("Error al guardar el TileSet: %d" % err)
+		push_error("Error saving the TileSet: %d" % err)
 
 	quit()

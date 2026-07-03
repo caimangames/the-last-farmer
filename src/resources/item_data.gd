@@ -1,10 +1,10 @@
 extends Resource
 class_name ItemData
-## Definición de un objeto del juego (semilla, cosecha, herramienta, mineral...).
+## Definition of a game item (seed, crop, tool, mineral...).
 ##
-## Es un Resource: cada objeto concreto se crea como un archivo .tres en
-## res://data/items/. Esto permite a diseñadores añadir objetos sin tocar código
-## y los carga el ItemDatabase por su `id`.
+## It's a Resource: each concrete item is created as a .tres file in
+## res://data/items/. This lets designers add items without touching code,
+## and ItemDatabase loads them by their `id`.
 
 enum Category { SEED, CROP, TOOL, RESOURCE, FOOD, FISH, FORAGE, MISC }
 
@@ -14,14 +14,14 @@ enum Category { SEED, CROP, TOOL, RESOURCE, FOOD, FISH, FORAGE, MISC }
 @export var icon: Texture2D
 @export var category: Category = Category.MISC
 
-## Cuántas unidades caben en un solo slot del inventario.
+## How many units fit in a single inventory slot.
 @export var max_stack: int = 99
-## Precio de venta base (antes de modificadores de calidad/perks).
+## Base sell price (before quality/perk modifiers).
 @export var sell_price: int = 0
-## Si es false, el objeto no puede venderse en la tienda.
+## If false, the item cannot be sold in the shop.
 @export var sellable: bool = true
 
-## Para semillas: el cultivo que producen al plantarse.
+## For seeds: the crop they produce when planted.
 @export var crop: CropData
 
 

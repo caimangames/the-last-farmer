@@ -22,7 +22,7 @@ filter_clip = true
 [resource]
 script = ExtResource("1_crop")
 id = &"turnip"
-display_name = "Nabo"
+display_name = "Turnip"
 growth_stages = Array[int]([2, 2])
 stage_textures = Array[Texture2D]([SubResource("stage_0"), SubResource("stage_1"), SubResource("stage_ready")])
 valid_seasons = Array[int]([0])

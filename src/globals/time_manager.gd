@@ -1,16 +1,16 @@
 extends Node
-## Reloj del juego: gestiona la hora, el día, la estación y el año.
+## Game clock: manages the hour, day, season, and year.
 ##
-## El tiempo solo avanza cuando el juego está activo (no en pausa ni en menús).
-## Emite señales a través del EventBus para que cultivos, NPCs e iluminación
-## reaccionen al paso del tiempo sin depender directamente de este nodo.
+## Time only advances while the game is active (not paused or in menus).
+## Emits signals through the EventBus so crops, NPCs, and lighting can
+## react to the passage of time without depending directly on this node.
 
 enum Season { SPRING, SUMMER, FALL, WINTER }
 
 const DAYS_PER_SEASON: int = 28
 const START_HOUR: int = 6
-const END_HOUR: int = 26  # 2:00 AM del día siguiente -> el jugador se desmaya
-## Segundos reales por minuto del juego. Más bajo = el día pasa más rápido.
+const END_HOUR: int = 26  # 2:00 AM the next day -> the player passes out
+## Real seconds per game minute. Lower = the day passes faster.
 const REAL_SECONDS_PER_GAME_MINUTE: float = 0.7
 
 var hour: int = START_HOUR
@@ -27,9 +27,9 @@ func _ready() -> void:
 	EventBus.game_paused.connect(func(p): _paused = p)
 
 
-## Dormir voluntariamente: cierra el día actual y arranca el siguiente.
-## Provisional hasta que exista una cama/casa interactuable (M7): se dispara
-## con la acción "sleep" mientras el reloj corre.
+## Sleep voluntarily: closes out the current day and starts the next one.
+## Provisional until an interactable bed/house exists (M7): triggered
+## by the "sleep" action while the clock is running.
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("sleep") and not _paused:
 		sleep()

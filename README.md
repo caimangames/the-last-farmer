@@ -1,88 +1,88 @@
 # The Last Farmer 🌾
 
-Juego de gestión de granjas en 2D top-down, estilo *Stardew Valley*, hecho con **Godot 4.6** (GDScript).
+2D top-down farm management game, *Stardew Valley*-style, made with **Godot 4.6** (GDScript).
 
-## Arquitectura
+## Architecture
 
-El proyecto sigue una organización **por features** y se apoya en tres pilares para mantenerse escalable:
+The project follows a **by-feature** organization and rests on three pillars to stay scalable:
 
-1. **Autoloads (singletons)** — sistemas globales que viven durante toda la partida.
-2. **EventBus (pub/sub)** — los sistemas se comunican por señales, sin referencias directas entre ellos. Esto evita el acoplamiento y deja añadir features sin tocar lo existente.
-3. **Data-driven con `Resource`** — items, cultivos y recetas se definen como archivos `.tres` en `data/`, no en código. Un diseñador puede añadir un cultivo nuevo sin programar.
+1. **Autoloads (singletons)** — global systems that live for the whole playthrough.
+2. **EventBus (pub/sub)** — systems communicate via signals, with no direct references between them. This avoids coupling and lets features be added without touching existing code.
+3. **Data-driven with `Resource`** — items, crops, and recipes are defined as `.tres` files in `data/`, not in code. A designer can add a new crop without programming.
 
-## Estructura de carpetas
+## Folder structure
 
 ```
 the-last-farmer/
-├── project.godot          # Config: autoloads, input map, layers de física, render 2D
-├── assets/                # Arte y audio crudos (sin lógica)
+├── project.godot          # Config: autoloads, input map, physics layers, 2D render
+├── assets/                # Raw art and audio (no logic)
 │   ├── sprites/           #   characters / crops / tiles / ui
 │   ├── tilesets/
 │   ├── audio/             #   music / sfx
 │   ├── fonts/  shaders/
-├── data/                  # Recursos .tres (instancias de datos)
+├── data/                  # .tres resources (data instances)
 │   ├── items/  crops/  recipes/  npcs/
 ├── src/
 │   ├── globals/           # Autoloads (singletons)
-│   │   ├── event_bus.gd       # Hub central de señales
-│   │   ├── game_state.gd      # Oro, flags, inventario activo
-│   │   ├── time_manager.gd    # Reloj, día, estación, año
-│   │   ├── save_manager.gd    # Guardado/carga JSON en user://
-│   │   ├── scene_manager.gd   # Transiciones entre escenas
-│   │   └── audio_manager.gd   # Música y pool de SFX
-│   ├── resources/         # Clases de datos (class_name): ItemData, CropData
-│   ├── entities/          # Cosas vivas del mundo
-│   │   ├── player/            # Player (movimiento + inventario)
+│   │   ├── event_bus.gd       # Central signal hub
+│   │   ├── game_state.gd      # Gold, flags, active inventory
+│   │   ├── time_manager.gd    # Clock, day, season, year
+│   │   ├── save_manager.gd    # JSON save/load in user://
+│   │   ├── scene_manager.gd   # Scene transitions
+│   │   └── audio_manager.gd   # Music and SFX pool
+│   ├── resources/         # Data classes (class_name): ItemData, CropData
+│   ├── entities/          # Living things in the world
+│   │   ├── player/            # Player (movement + inventory)
 │   │   ├── npc/  animals/
-│   │   └── interactable.gd    # Clase base de interacción
-│   ├── systems/           # Lógica de juego desacoplada
+│   │   └── interactable.gd    # Base interaction class
+│   ├── systems/           # Decoupled game logic
 │   │   ├── inventory/         # Inventory + InventorySlot
 │   │   ├── farming/  dialogue/  economy/
 │   ├── ui/                # hud / menus / components
-│   ├── world/             # Escenas de localizaciones
+│   ├── world/             # Location scenes
 │   │   ├── farm/  town/  interiors/
-│   ├── core/              # Utilidades y clases base compartidas
-│   └── main/              # main.tscn — punto de entrada
-└── tests/                 # Pruebas (GUT u otro framework)
+│   ├── core/              # Shared utilities and base classes
+│   └── main/              # main.tscn — entry point
+└── tests/                 # Tests (GUT or another framework)
 ```
 
-## Convenciones
+## Conventions
 
-- **Archivos y carpetas**: `snake_case`. **Clases (`class_name`)**: `PascalCase`.
-- Un script `.gd` por nodo/escena, junto a su `.tscn`.
-- La comunicación entre sistemas distintos pasa **siempre por el EventBus**; las referencias directas se reservan para relaciones padre→hijo.
-- Cada manager con estado persistente expone `to_dict()` / `from_dict()` para el guardado.
+- **Files and folders**: `snake_case`. **Classes (`class_name`)**: `PascalCase`.
+- One `.gd` script per node/scene, alongside its `.tscn`.
+- Communication between unrelated systems **always goes through the EventBus**; direct references are reserved for parent→child relationships.
+- Every manager with persistent state exposes `to_dict()` / `from_dict()` for saving.
 
-## Cómo arrancar
+## Getting started
 
-Abre la carpeta del proyecto en Godot 4.6 y pulsa **Play** (F5). El flujo de arranque es:
+Open the project folder in Godot 4.6 and press **Play** (F5). The startup flow is:
 
-`main.tscn` → inicia partida nueva → `TimeManager.start_day()` → carga `world/farm/farm.tscn`.
+`main.tscn` → starts a new game → `TimeManager.start_day()` → loads `world/farm/farm.tscn`.
 
-Controles: **WASD** mover · **E** interactar · **click izq.** usar herramienta · **I** inventario · **Esc** pausa.
+Controls: **WASD** move · **E** interact · **left click** use tool · **I** inventory · **Esc** pause.
 
 ## Assets
 
-Arte: **Cute Fantasy** (versión gratuita) de Kenmi, en `assets/`.
+Art: **Cute Fantasy** (free tier) by Kenmi, in `assets/`.
 
-| Carpeta | Contenido | Formato |
+| Folder | Contents | Format |
 |---|---|---|
-| `assets/sprites/characters/` | `player.png` (6×10 frames de 32×32), `player_actions.png` (3×18) | Spritesheet |
-| `assets/sprites/animals/` | chicken, cow, pig, sheep (64×64) | Spritesheet |
+| `assets/sprites/characters/` | `player.png` (6x10 frames of 32x32), `player_actions.png` (3x18) | Spritesheet |
+| `assets/sprites/animals/` | chicken, cow, pig, sheep (64x64) | Spritesheet |
 | `assets/sprites/enemies/` | skeleton, slime_green | Spritesheet |
-| `assets/sprites/props/` | árboles, vallas, cofre, casa, puente, decoración | Sprites sueltos |
-| `assets/tilesets/` | tiles base de 16×16 (grass/path/water/farmland/cliff/beach) | Tiles / autotiles |
-| `assets/tilesets/ground_tileset.tres` | TileSet generado (grass + farmland 3×3 + path + water) | Recurso Godot |
+| `assets/sprites/props/` | trees, fences, chest, house, bridge, decoration | Loose sprites |
+| `assets/tilesets/` | 16x16 base tiles (grass/path/water/farmland/cliff/beach) | Tiles / autotiles |
+| `assets/tilesets/ground_tileset.tres` | Generated TileSet (grass + farmland 3x3 + path + water) | Godot resource |
 
-Import configurado para pixel-art: filtro **Nearest**, sin mipmaps (definido como default del proyecto).
-El `ground_tileset.tres` se regenera con `tools/build_ground_tileset.gd` si cambian los tiles base.
+Import configured for pixel art: **Nearest** filter, no mipmaps (set as the project default).
+`ground_tileset.tres` is regenerated with `tools/build_ground_tileset.gd` if the base tiles change.
 
-> ⚠️ **Licencia (versión gratuita)**: solo proyectos **no comerciales**, se permite modificar, **NO se permite redistribuir** (ni modificado). Ver `assets/CUTE_FANTASY_LICENSE.txt`. Esto implica: **no subas la carpeta `assets/` a un repositorio público**. Considera añadir `assets/sprites/` y `assets/tilesets/*.png` al `.gitignore` si el repo va a ser público, o adquirir la versión de pago para uso comercial.
+> ⚠️ **License (free tier)**: **non-commercial** projects only, modification allowed, **redistribution NOT allowed** (even modified). See `assets/CUTE_FANTASY_LICENSE.txt`. This means: **don't push the `assets/` folder to a public repository**. Consider adding `assets/sprites/` and `assets/tilesets/*.png` to `.gitignore` if the repo will be public, or buying the paid version for commercial use.
 
-## Próximos pasos sugeridos
+## Suggested next steps
 
-- [ ] `Farmland` (TileMapLayer) con arar / regar / plantar usando `CropData`.
-- [ ] `ItemDatabase` que cargue los `.tres` de `data/items/` por `id`.
-- [ ] HUD: reloj, oro y barra de herramientas (escuchando el EventBus).
-- [ ] Sistema de diálogo y primer NPC.
-- [ ] Pantalla de fin de día → guardado automático.
+- [ ] `Farmland` (TileMapLayer) with till / water / plant using `CropData`.
+- [ ] `ItemDatabase` that loads the `.tres` files in `data/items/` by `id`.
+- [ ] HUD: clock, gold, and toolbar (listening to the EventBus).
+- [ ] Dialogue system and first NPC.
+- [ ] End-of-day screen → auto-save.

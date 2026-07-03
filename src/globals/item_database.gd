@@ -1,9 +1,9 @@
 extends Node
-## Registro central de ItemData y CropData cargados desde data/.
+## Central registry of ItemData and CropData loaded from data/.
 ##
-## En _ready() escanea data/items/ y data/crops/ e indexa cada recurso por su
-## campo `id`. El resto del juego accede a los datos siempre a través de aquí,
-## nunca con load() directo, para facilitar el caché y el hot-reload.
+## In _ready() it scans data/items/ and data/crops/ and indexes each resource
+## by its `id` field. The rest of the game always accesses data through here,
+## never via direct load(), to make caching and hot-reload easier.
 
 var _items: Dictionary = {}  # StringName → ItemData
 var _crops: Dictionary = {}  # StringName → CropData
@@ -17,7 +17,7 @@ func _ready() -> void:
 func _scan(path: String, registry: Dictionary) -> void:
 	var dir := DirAccess.open(path)
 	if dir == null:
-		push_error("ItemDatabase: no se pudo abrir '%s'" % path)
+		push_error("ItemDatabase: could not open '%s'" % path)
 		return
 	dir.list_dir_begin()
 	var file := dir.get_next()
@@ -27,7 +27,7 @@ func _scan(path: String, registry: Dictionary) -> void:
 			if res != null and res.get("id"):
 				registry[res.id] = res
 			elif res != null:
-				push_warning("ItemDatabase: recurso sin `id` ignorado: %s" % file)
+				push_warning("ItemDatabase: resource with no `id` ignored: %s" % file)
 		file = dir.get_next()
 
 

@@ -11,8 +11,8 @@ filter_clip = true
 [resource]
 script = ExtResource("1_item")
 id = &"turnip"
-display_name = "Nabo"
-description = "Un nabo recién cosechado."
+display_name = "Turnip"
+description = "A freshly harvested turnip."
 icon = SubResource("icon_turnip")
 category = 1
 max_stack = 99

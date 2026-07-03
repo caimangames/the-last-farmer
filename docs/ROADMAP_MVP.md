@@ -1,115 +1,116 @@
-# Roadmap del MVP
+# MVP Roadmap
 
-> Desglose de ingeniería para llegar al MVP jugable. Ver `docs/GDD.md` sección 1.4 para el
-> alcance de alto nivel; este documento detalla milestones, archivos y criterios de "hecho".
+> Engineering breakdown to reach the playable MVP. See `docs/GDD.md` section 1.4 for the
+> high-level scope; this document details milestones, files, and "done" criteria.
 
-Bucle objetivo: labrar → plantar → regar → crecer → cosechar → vender → dormir → siguiente día,
-con un gancho narrativo inicial y al menos un NPC.
+Target loop: till → plant → water → grow → harvest → sell → sleep → next day,
+with an initial narrative hook and at least one NPC.
 
-Orden recomendado: M0 y M1 en paralelo → M2/M3 → M4 → M5/M6 en paralelo → M7 → M8 (opcional).
+Recommended order: M0 and M1 in parallel → M2/M3 → M4 → M5/M6 in parallel → M7 → M8 (optional).
 
-## M0 — Decisiones de diseño mínimas
+## M0 — Minimal design decisions
 
-**Sin código.** Define en `docs/GDD.md`: elevator pitch (1.1), 3-4 pilares de diseño (1.2),
-premisa en 1-2 frases (2.1), 1 NPC con nombre/rol (2.4), 3-5 líneas de diálogo inicial.
+**No code.** Define in `docs/GDD.md`: elevator pitch (1.1), 3-4 design pillars (1.2),
+premise in 1-2 sentences (2.1), 1 NPC with name/role (2.4), 3-5 lines of opening dialogue.
 
-Bloquea a M4 y M6 — el sistema de diálogo no se puede probar con contenido real sin esto.
+Blocks M4 and M6 — the dialogue system can't be tested with real content without this.
 
-## M1 — Arreglar el guardado (inventario + farmland)
+## M1 — Fix saving (inventory + farmland)
 
-**Objetivo:** recargar una partida no pierde progreso.
+**Goal:** reloading a game doesn't lose progress.
 
-- `Inventory` (`src/systems/inventory/inventory.gd`): añadir `to_dict()`/`from_dict()`.
-- `GameState.to_dict()`/`from_dict()` (`src/globals/game_state.gd`): incluir el inventario.
-- `SaveManager.save_game()`/`load_game()` (`src/globals/save_manager.gd`): invocar también
-  `FarmlandSystem.to_dict()`/`from_dict()` (ya existen, líneas 223-243 de
-  `farmland_system.gd`, nadie los llama hoy). Requiere localizar la instancia activa, p. ej.
-  vía grupo `"farmland"`.
-- `farm.gd`: no repartir ítems iniciales si se está cargando una partida existente.
+- `Inventory` (`src/systems/inventory/inventory.gd`): add `to_dict()`/`from_dict()`.
+- `GameState.to_dict()`/`from_dict()` (`src/globals/game_state.gd`): include the inventory.
+- `SaveManager.save_game()`/`load_game()` (`src/globals/save_manager.gd`): also call
+  `FarmlandSystem.to_dict()`/`from_dict()` (already exist, lines 223-243 of
+  `farmland_system.gd`, nobody calls them today). Requires locating the active instance, e.g.
+  via the `"farmland"` group.
+- `farm.gd`: don't hand out starting items if an existing save is being loaded.
 
-**Hecho cuando:** labrar/plantar/regar, guardar, cerrar el juego, recargar → todo intacto.
+**Done when:** till/plant/water, save, close the game, reload → everything intact.
 
-## M2 — Energía/estamina y dormir manualmente
+## M2 — Energy/stamina and manual sleep
 
-**Objetivo:** terminar el día por decisión del jugador, no solo esperando al reloj.
+**Goal:** end the day by player choice, not just by waiting for the clock.
 
-- Nueva señal `energy_changed` en `EventBus`.
+- New `energy_changed` signal in `EventBus`.
 - `GameState`: `energy`, `max_energy`, `spend_energy()`, `restore_energy()`.
-- `Player._try_use_tool()` (`player.gd`): gastar energía al usar herramientas.
-- `TimeManager.start_day()`: restaurar energía.
-- `HUD`: barra de energía.
-- Acción de "dormir" (interactuar con la cama/casa, o UI dedicada) que llama a
+- `Player._try_use_tool()` (`player.gd`): spend energy when using tools.
+- `TimeManager.start_day()`: restore energy.
+- `HUD`: energy bar.
+- "Sleep" action (interacting with the bed/house, or a dedicated UI) that calls
   `TimeManager.end_day()`.
 
-**Depende de:** M1. **Hecho cuando:** se puede dormir voluntariamente y la energía se refleja
-en el HUD.
+**Depends on:** M1. **Done when:** the player can sleep voluntarily and energy is reflected
+in the HUD.
 
-## M3 — Pulir el bucle de cultivo
+## M3 — Polish the farming loop
 
-**Objetivo:** los cultivos se marchitan si no se riegan; el regrowth funciona; hay feedback de
-temporada incorrecta.
+**Goal:** crops wither if not watered; regrowth works; there's feedback for the wrong
+season.
 
-- `farmland_system.gd`: usar `CropData.regrowth_days` (campo ya existe, ignorado hoy en
-  `try_harvest()`); añadir marchitamiento por días sin riego.
-- Conectar por fin `crop_planted`, `crop_watered`, `crop_harvested` (declaradas en `EventBus`,
-  nunca conectadas) a feedback visual/sonoro.
-- Mensaje claro cuando `try_plant()` falla por temporada incorrecta.
+- `farmland_system.gd`: use `CropData.regrowth_days` (field already exists, ignored today in
+  `try_harvest()`); add withering after days without watering.
+- Finally connect `crop_planted`, `crop_watered`, `crop_harvested` (declared in `EventBus`,
+  never connected) to visual/audio feedback.
+- Clear message when `try_plant()` fails due to the wrong season.
 
-**Hecho cuando:** un cultivo sin riego muere visualmente; uno con `regrowth_days > 0` puede
-cosecharse más de una vez.
+**Done when:** an unwatered crop visibly dies; one with `regrowth_days > 0` can be
+harvested more than once.
 
-## M4 — Primer NPC y sistema de diálogo
+## M4 — First NPC and dialogue system
 
-**Objetivo:** interactuar (E) con el NPC de M0 abre un cuadro de diálogo con su texto.
+**Goal:** interacting (E) with the M0 NPC opens a dialogue box with their text.
 
-- `src/entities/npc/npc.gd` (nuevo): extiende `Interactable`
-  (`src/entities/interactable.gd`, hoy sin nada que la use).
-- `src/resources/dialogue_data.gd` (nuevo `Resource`, siguiendo el patrón de `ItemData`/`CropData`).
-- `src/ui/components/dialogue_box.gd`/`.tscn` (nuevo, carpeta hoy vacía).
-- Reutilizar `dialogue_requested`, `dialogue_finished`, `interaction_started`, `game_paused`
-  (las 4 declaradas en `EventBus`, ninguna conectada hoy).
-- Requiere sprite placeholder para el NPC (no hay ninguno en `assets/sprites/`).
+- `src/entities/npc/npc.gd` (new): extends `Interactable`
+  (`src/entities/interactable.gd`, currently nothing uses it).
+- `src/resources/dialogue_data.gd` (new `Resource`, following the `ItemData`/`CropData` pattern).
+- `src/ui/components/dialogue_box.gd`/`.tscn` (new, folder currently empty).
+- Reuse `dialogue_requested`, `dialogue_finished`, `interaction_started`, `game_paused`
+  (all 4 declared in `EventBus`, none connected today).
+- Requires a placeholder sprite for the NPC (none exist in `assets/sprites/`).
 
-**Depende de:** M0. **Hecho cuando:** acercarse al NPC y pulsar E muestra su diálogo y pausa
-el juego mientras dura.
+**Depends on:** M0. **Done when:** approaching the NPC and pressing E shows their dialogue and
+pauses the game for its duration.
 
-## M5 — Economía básica: vender cosechas
+## M5 — Basic economy: selling crops
 
-**Objetivo:** vender turnips al NPC de M4, el oro sube.
+**Goal:** selling turnips to the M4 NPC increases gold.
 
-- `src/systems/economy/shop_system.gd` (nuevo).
-- `src/ui/menus/sell_menu.gd`/`.tscn` (nuevo, carpeta hoy vacía).
-- Reutiliza `gold_changed` e `inventory_changed` (ya conectadas al HUD).
+- `src/systems/economy/shop_system.gd` (new).
+- `src/ui/menus/sell_menu.gd`/`.tscn` (new, folder currently empty).
+- Reuses `gold_changed` and `inventory_changed` (already connected to the HUD).
 
-**Depende de:** M4. **Hecho cuando:** vender un turnip descuenta del inventario y suma oro
-visible en el HUD.
+**Depends on:** M4. **Done when:** selling a turnip deducts it from the inventory and adds
+gold visible in the HUD.
 
-## M6 — Gancho narrativo inicial
+## M6 — Initial narrative hook
 
-**Objetivo:** diálogo de apertura automático al empezar partida nueva (GDD 2.5, marcado como
-prioridad de MVP).
+**Goal:** an automatic opening dialogue when starting a new game (GDD 2.5, marked as an
+MVP priority).
 
-- Casi solo contenido: reutiliza la infraestructura de M4.
-- `main.gd`/`farm.gd`: disparar `dialogue_requested` con el diálogo de intro en la primera carga.
+- Almost entirely content: reuses M4's infrastructure.
+- `main.gd`/`farm.gd`: fire `dialogue_requested` with the intro dialogue on first load.
 
-**Depende de:** M0 + M4.
+**Depends on:** M0 + M4.
 
-## M7 — Menús: pausa, guardar/cargar, inicio
+## M7 — Menus: pause, save/load, start
 
-**Objetivo:** dejar de arrancar siempre en partida nueva.
+**Goal:** stop always starting on a new game.
 
-- `main.gd` hoy llama incondicionalmente a `_start_new_game()` — necesita pantalla de inicio
-  que ofrezca "Nueva partida" / "Cargar" (usa `SaveManager.has_save()`).
-- Menú de pausa: la acción `pause` (ya en el input map de `project.godot`) no tiene handler en
-  ningún script hoy. Emitir `EventBus.game_paused` (ya conectada en `TimeManager`, sin emisor).
-- `src/ui/menus/` (hoy vacía salvo `.gitkeep`).
+- `main.gd` today unconditionally calls `_start_new_game()` — needs a start screen
+  offering "New Game" / "Load" (uses `SaveManager.has_save()`).
+- Pause menu: the `pause` action (already in `project.godot`'s input map) has no handler in
+  any script today. Emit `EventBus.game_paused` (already connected in `TimeManager`, with no
+  emitter).
+- `src/ui/menus/` (currently empty except for `.gitkeep`).
 
-**Depende de:** M1 + M2.
+**Depends on:** M1 + M2.
 
-## M8 — Pulido sensorial (opcional / stretch)
+## M8 — Sensory polish (optional / stretch)
 
-No bloqueante para considerar el MVP jugable.
+Not blocking for the MVP to be considered playable.
 
-- Música y SFX (carpetas `assets/audio/` vacías, `AudioManager` ya implementado y sin usar).
-- Animación de usar herramienta (`player_actions.png` existe, sin configurar).
-- Toasts para `notification_requested` (declarada, sin consumidor).
+- Music and SFX (`assets/audio/` folders empty, `AudioManager` already implemented and unused).
+- Tool-use animation (`player_actions.png` exists, not configured).
+- Toasts for `notification_requested` (declared, no consumer).

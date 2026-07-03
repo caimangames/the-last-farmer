@@ -26,7 +26,7 @@ func _ready() -> void:
 		_give_starting_items()
 	_setup_decorations()
 	_hud.setup(_player)
-	print("[Farm] Granja cargada. Día %d, %s." % [TimeManager.day, TimeManager.get_time_string()])
+	print("[Farm] Farm loaded. Day %d, %s." % [TimeManager.day, TimeManager.get_time_string()])
 
 
 func _paint_grass() -> void:
@@ -47,23 +47,23 @@ func _give_starting_items() -> void:
 
 
 func _setup_decorations() -> void:
-	# --- Casa (96×128) — esquina superior derecha ---
+	# --- House (96x128) — top-right corner ---
 	_prop("res://assets/sprites/props/house_wood_blue.png", Vector2(424, 12))
 
-	# --- Cofre (16×16) — junto a la puerta de la casa ---
+	# --- Chest (16x16) — next to the house door ---
 	_prop("res://assets/sprites/props/chest.png", Vector2(424, 140))
 
-	# --- Árbol grande (64×80) — esquinas del campo ---
+	# --- Large tree (64x80) — corners of the field ---
 	_prop("res://assets/sprites/props/oak_tree.png", Vector2(8,   8))
 	_prop("res://assets/sprites/props/oak_tree.png", Vector2(8,  288))
 	_prop("res://assets/sprites/props/oak_tree.png", Vector2(552,  8))
 	_prop("res://assets/sprites/props/oak_tree.png", Vector2(552, 288))
 
-	# --- Árbol pequeño izquierdo (48×48, mitad izquierda del sheet) ---
+	# --- Small tree, left (48x48, left half of the sheet) ---
 	_prop_atlas("res://assets/sprites/props/oak_tree_small.png",
 			Vector2(8, 160), Rect2(0, 0, 48, 48))
 
-	# --- Árbol pequeño derecho (48×48, mitad derecha del sheet) ---
+	# --- Small tree, right (48x48, right half of the sheet) ---
 	_prop_atlas("res://assets/sprites/props/oak_tree_small.png",
 			Vector2(552, 160), Rect2(48, 0, 48, 48))
 

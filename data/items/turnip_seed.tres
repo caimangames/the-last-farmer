@@ -12,8 +12,8 @@ filter_clip = true
 [resource]
 script = ExtResource("1_item")
 id = &"turnip_seed"
-display_name = "Semilla de Nabo"
-description = "Plántala en tierra labrada."
+display_name = "Turnip Seed"
+description = "Plant it in tilled soil."
 icon = SubResource("icon_turnip_seed")
 category = 0
 max_stack = 99

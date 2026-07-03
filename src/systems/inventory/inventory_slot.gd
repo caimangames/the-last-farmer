@@ -1,6 +1,6 @@
 extends RefCounted
 class_name InventorySlot
-## Un hueco del inventario: un ItemData y la cantidad apilada.
+## A single inventory slot: an ItemData and its stacked amount.
 
 var item: ItemData = null
 var amount: int = 0
@@ -16,7 +16,7 @@ func can_accept(other: ItemData) -> bool:
 	return item == other and amount < item.max_stack
 
 
-## Añade cuanto quepa y devuelve el sobrante que no entró.
+## Adds as much as fits and returns the leftover that didn't.
 func add(other: ItemData, count: int) -> int:
 	if not is_empty() and item != other:
 		return count

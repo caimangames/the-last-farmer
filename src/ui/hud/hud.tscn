@@ -15,7 +15,7 @@ mouse_filter = 2
 [node name="TimeLabel" type="Label" parent="TopLeft"]
 layout_mode = 2
 mouse_filter = 2
-text = "Día 1 — Primavera — 6:00 AM"
+text = "Day 1 — Spring — 6:00 AM"
 
 [node name="TopRight" type="PanelContainer" parent="."]
 anchor_left = 1.0

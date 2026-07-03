@@ -1,10 +1,10 @@
 extends Node
 class_name FarmlandSystem
-## Gestiona el estado de cada tile del huerto: labrado, regado, plantado y listo.
+## Manages the state of each farmland tile: tilled, watered, planted, and ready.
 ##
-## farm.gd llama a setup() en su _ready() para pasar las referencias necesarias.
-## El sistema escucha EventBus.tool_used y EventBus.interact_tile para recibir
-## acciones del jugador sin acoplarse directamente al Player.
+## farm.gd calls setup() in its _ready() to hand over the necessary references.
+## The system listens to EventBus.tool_used and EventBus.interact_tile to
+## receive player actions without coupling directly to the Player.
 
 enum State { UNTILLED, TILLED, PLANTED, READY, WITHERED }
 
@@ -17,7 +17,7 @@ var _crop_layer: Node2D
 var _player: Player
 var _plot_origin: Vector2i
 var _plot_size: Vector2i
-## Vector2i → { state: int, crop_id: StringName, days_grown: int, watered: bool }
+## Vector2i -> { state: int, crop_id: StringName, days_grown: int, watered: bool }
 var _tiles: Dictionary = {}
 
 
@@ -54,7 +54,7 @@ func _init_tiles() -> void:
 
 
 # ---------------------------------------------------------------------------
-# Acciones públicas
+# Public actions
 # ---------------------------------------------------------------------------
 
 func try_till(pos: Vector2i) -> bool:
@@ -87,7 +87,7 @@ func try_plant(pos: Vector2i, seed_item: ItemData) -> bool:
 		return false
 	if not seed_item.crop.can_grow_in_season(TimeManager.season):
 		EventBus.notification_requested.emit(
-			"%s no crece en esta estación." % seed_item.crop.display_name
+			"%s doesn't grow in this season." % seed_item.crop.display_name
 		)
 		return false
 	if not _player.inventory.remove_item(seed_item, 1):
@@ -112,7 +112,7 @@ func try_harvest(pos: Vector2i) -> bool:
 	EventBus.crop_harvested.emit(crop, pos)
 	EventBus.notification_requested.emit("+%d %s" % [amount, crop.harvest_item.display_name])
 	if crop.regrowth_days > 0:
-		## Cosecha múltiple: vuelve a una fase anterior en vez de morir.
+		## Multiple harvest: returns to an earlier stage instead of dying.
 		tile.state = State.PLANTED
 		tile.days_grown = max(0, crop.total_growth_days() - crop.regrowth_days)
 		tile.watered = false
@@ -130,7 +130,7 @@ func try_harvest(pos: Vector2i) -> bool:
 
 
 # ---------------------------------------------------------------------------
-# Señales del EventBus
+# EventBus signals
 # ---------------------------------------------------------------------------
 
 func _on_tool_used(item: ItemData, world_pos: Vector2) -> void:
@@ -163,17 +163,17 @@ func _on_day_ended(day: int, season: int, _year: int) -> void:
 						tile.state = State.READY
 				_update_crop(pos)
 			else:
-				## Sin riego un día entero: el cultivo se marchita.
+				## No watering for a full day: the crop withers.
 				tile.state = State.WITHERED
 				_update_crop(pos)
 		if tile.watered:
 			tile.watered = false
 			_update_watered(pos, false)
-	print("[FarmlandSystem] Día %d procesado." % day)
+	print("[FarmlandSystem] Day %d processed." % day)
 
 
 # ---------------------------------------------------------------------------
-# Visuales
+# Visuals
 # ---------------------------------------------------------------------------
 
 func world_to_tile(world_pos: Vector2) -> Vector2i:
@@ -250,7 +250,7 @@ func _get_stage(tile: Dictionary, crop: CropData) -> int:
 
 
 # ---------------------------------------------------------------------------
-# Guardado
+# Saving
 # ---------------------------------------------------------------------------
 
 func to_dict() -> Dictionary:

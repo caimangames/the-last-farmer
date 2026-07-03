@@ -1,176 +1,176 @@
 # The Last Farmer — Game Design Document
 
-> Estado: **Borrador inicial**
-> Última actualización: 2026-07-02
-> Autor: Solo dev (diseño, programación, narrativa y arte)
+> Status: **Initial draft**
+> Last updated: 2026-07-02
+> Author: Solo dev (design, programming, narrative, and art)
 
 ---
 
-## Índice
+## Table of contents
 
-1. [Visión general](#1-visión-general)
-2. [Narrativa y mundo](#2-narrativa-y-mundo)
-3. [Mecánicas jugables (core loop)](#3-mecánicas-jugables-core-loop)
-4. [Progresión y economía](#4-progresión-y-economía)
-5. [Arte y estilo visual](#5-arte-y-estilo-visual)
-6. [Interfaz y controles](#6-interfaz-y-controles)
-7. [Alcance técnico (Godot)](#7-alcance-técnico-godot)
-8. [Roadmap y milestones](#8-roadmap-y-milestones)
+1. [Overview](#1-overview)
+2. [Narrative and world](#2-narrative-and-world)
+3. [Gameplay mechanics (core loop)](#3-gameplay-mechanics-core-loop)
+4. [Progression and economy](#4-progression-and-economy)
+5. [Art and visual style](#5-art-and-visual-style)
+6. [Interface and controls](#6-interface-and-controls)
+7. [Technical scope (Godot)](#7-technical-scope-godot)
+8. [Roadmap and milestones](#8-roadmap-and-milestones)
 
 ---
 
-## 1. Visión general
+## 1. Overview
 
 ### 1.1 Elevator pitch
-> _Pendiente: una línea que resuma el juego._
+> _TBD: a one-line summary of the game._
 
-### 1.2 Pilares de diseño
-> _Pendiente: 3-4 principios que guíen cada decisión de diseño._
+### 1.2 Design pillars
+> _TBD: 3-4 principles that guide every design decision._
 
 1. …
 2. …
 3. …
 
-### 1.3 Género y referencias
-- Género: RPG de granja top-down
-- Referencias de mecánicas: Stardew Valley
-- Referencias de tono narrativo: _pendiente_
+### 1.3 Genre and references
+- Genre: top-down farm RPG
+- Mechanics references: Stardew Valley
+- Narrative tone references: _TBD_
 
-### 1.4 Plataformas y alcance del MVP
-- Motor: Godot
-- Plataformas objetivo: _pendiente_
-- Alcance del MVP: bucle completo labrar → plantar → regar → crecer → cosechar → vender →
-  dormir → siguiente día; energía/estamina; guardado fiable (inventario y estado de la tierra
-  incluidos); economía básica (venta de cosechas); un NPC con diálogo y gancho narrativo
-  inicial; menús de inicio y pausa.
-  Desglose de milestones e implementación en [`docs/ROADMAP_MVP.md`](ROADMAP_MVP.md).
+### 1.4 Platforms and MVP scope
+- Engine: Godot
+- Target platforms: _TBD_
+- MVP scope: full loop till → plant → water → grow → harvest → sell →
+  sleep → next day; energy/stamina; reliable save (including inventory and
+  farmland state); basic economy (selling crops); one NPC with dialogue and
+  an initial narrative hook; start and pause menus.
+  Milestone breakdown and implementation in [`docs/ROADMAP_MVP.md`](ROADMAP_MVP.md).
 
 ---
 
-## 2. Narrativa y mundo
+## 2. Narrative and world
 
-### 2.1 Premisa
-> _Pendiente: el misterio oscuro del linaje familiar perseguido._
+### 2.1 Premise
+> _TBD: the dark mystery of the pursued family lineage._
 
-### 2.2 Tono y atmósfera
-> _Pendiente_
+### 2.2 Tone and atmosphere
+> _TBD_
 
-### 2.3 Estructura narrativa
-- Cómo se dosifica la historia (diálogos, notas, eventos, cinemáticas, etc.)
-> _Pendiente_
+### 2.3 Narrative structure
+- How the story is paced out (dialogue, notes, events, cutscenes, etc.)
+> _TBD_
 
-### 2.4 Personajes principales
-| Personaje | Rol | Descripción |
+### 2.4 Main characters
+| Character | Role | Description |
 |---|---|---|
 | | | |
 
-### 2.5 Introducción narrativa (gancho inicial)
-> _Pendiente — prioridad para el MVP_
+### 2.5 Narrative introduction (opening hook)
+> _TBD — MVP priority_
 
 ---
 
-## 3. Mecánicas jugables (core loop)
+## 3. Gameplay mechanics (core loop)
 
-### 3.1 Bucle de juego día a día
-> _Pendiente_
+### 3.1 Day-to-day game loop
+> _TBD_
 
-### 3.2 Sistema de cultivo
-- Arar
-- Plantar
-- Cosechar
-- Curvas de crecimiento / estaciones (si aplica)
-> _Pendiente_
+### 3.2 Farming system
+- Tilling
+- Planting
+- Harvesting
+- Growth curves / seasons (if applicable)
+> _TBD_
 
-### 3.3 Sistema de herramientas
-- Progresión
-- Desgaste
-- Mejoras
-> _Pendiente_
+### 3.3 Tool system
+- Progression
+- Wear
+- Upgrades
+> _TBD_
 
-### 3.4 Sistema de guardado
-> _Pendiente_
+### 3.4 Save system
+> _TBD_
 
-### 3.5 Otras mecánicas del MVP
-- Inventario
-- Energía / estamina
-- Economía básica
-> _Pendiente_
-
----
-
-## 4. Progresión y economía
-
-### 4.1 Desbloqueo de contenido
-> _Pendiente_
-
-### 4.2 Economía interna
-- Venta de cosechas
-- Compra de semillas / herramientas
-> _Pendiente_
+### 3.5 Other MVP mechanics
+- Inventory
+- Energy / stamina
+- Basic economy
+> _TBD_
 
 ---
 
-## 5. Arte y estilo visual
+## 4. Progression and economy
 
-### 5.1 Dirección de arte
-- Paleta de colores: _pendiente_
-- Referencias visuales: _pendiente_
-- Tamaño de sprites / tile: _pendiente_
+### 4.1 Content unlocks
+> _TBD_
 
-### 5.2 Lista de assets necesarios (MVP)
-- [ ] Tileset de terreno de cultivo
-- [ ] Sprite del personaje jugable (idle, walk, herramientas)
-- [ ] Herramientas (icons + animaciones de uso)
-- [ ] UI base
-- [ ] _pendiente: assets narrativos_
+### 4.2 Internal economy
+- Selling crops
+- Buying seeds / tools
+> _TBD_
 
 ---
 
-## 6. Interfaz y controles
+## 5. Art and visual style
+
+### 5.1 Art direction
+- Color palette: _TBD_
+- Visual references: _TBD_
+- Sprite / tile size: _TBD_
+
+### 5.2 Required assets list (MVP)
+- [ ] Farmland terrain tileset
+- [ ] Playable character sprite (idle, walk, tools)
+- [ ] Tools (icons + use animations)
+- [ ] Base UI
+- [ ] _TBD: narrative assets_
+
+---
+
+## 6. Interface and controls
 
 ### 6.1 HUD
-> _Pendiente_
+> _TBD_
 
-### 6.2 Menús
-> _Pendiente_
+### 6.2 Menus
+> _TBD_
 
-### 6.3 Controles
-| Acción | Teclado/Mouse | Gamepad |
+### 6.3 Controls
+| Action | Keyboard/Mouse | Gamepad |
 |---|---|---|
 | | | |
 
 ---
 
-## 7. Alcance técnico (Godot)
+## 7. Technical scope (Godot)
 
-### 7.1 Arquitectura general
-- Escenas principales: _pendiente_
-- Autoloads / singletons: _pendiente_
-- Sistemas clave (guardado, inventario, diálogo, etc.): _pendiente_
+### 7.1 General architecture
+- Main scenes: _TBD_
+- Autoloads / singletons: _TBD_
+- Key systems (save, inventory, dialogue, etc.): _TBD_
 
-### 7.2 Requisitos no funcionales
-- Rendimiento objetivo: _pendiente_
-- Resoluciones soportadas: _pendiente_
+### 7.2 Non-functional requirements
+- Target performance: _TBD_
+- Supported resolutions: _TBD_
 
 ---
 
-## 8. Roadmap y milestones
+## 8. Roadmap and milestones
 
-| Etapa | Objetivo | Qué mostrar |
+| Stage | Goal | What to show |
 |---|---|---|
-| MVP | Mecánicas núcleo + intro narrativa | Gameplay vertical slice |
-| Itch.io | Primera versión pública | Build jugable |
-| Early Access Steam | Contenido ampliado | Trailer + demo |
-| Kickstarter | Financiamiento | Pitch + prototipo pulido |
+| MVP | Core mechanics + narrative intro | Vertical slice gameplay |
+| Itch.io | First public release | Playable build |
+| Early Access Steam | Expanded content | Trailer + demo |
+| Kickstarter | Funding | Pitch + polished prototype |
 
-El desglose de milestones de ingeniería para llegar al MVP (M0-M8, con archivos, señales de
-`EventBus` a reutilizar y criterios de "hecho" por milestone) vive en
+The engineering milestone breakdown to reach the MVP (M0-M8, with files, `EventBus`
+signals to reuse, and "done" criteria per milestone) lives in
 [`docs/ROADMAP_MVP.md`](ROADMAP_MVP.md).
 
 ---
 
-## Registro de cambios
+## Changelog
 
-| Fecha | Cambio |
+| Date | Change |
 |---|---|
-| 2026-07-02 | Creación del esqueleto inicial del GDD |
+| 2026-07-02 | Created the initial GDD skeleton |

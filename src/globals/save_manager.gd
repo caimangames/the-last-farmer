@@ -1,9 +1,9 @@
 extends Node
-## Guardado y carga de partidas en formato JSON.
+## Saving and loading of games in JSON format.
 ##
-## Recoge el estado de los distintos managers (GameState, TimeManager, ...) en
-## un único diccionario y lo escribe en user:// (carpeta de datos del usuario).
-## Cada sistema expone to_dict()/from_dict() para mantener el guardado desacoplado.
+## Collects the state of the various managers (GameState, TimeManager, ...) into
+## a single dictionary and writes it to user:// (the user data folder).
+## Each system exposes to_dict()/from_dict() to keep saving decoupled.
 
 const SAVE_DIR: String = "user://saves/"
 const SAVE_EXTENSION: String = ".save"
@@ -15,7 +15,7 @@ func _ready() -> void:
 	DirAccess.make_dir_recursive_absolute(SAVE_DIR)
 
 
-## Guardado manual de prueba mientras no existe un menú de pausa (M7).
+## Manual test save while there's no pause menu yet (M7).
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("quicksave"):
 		save_game()
@@ -33,7 +33,7 @@ func save_game(slot: int = 0) -> bool:
 	var path: String = _slot_path(slot)
 	var file: FileAccess = FileAccess.open(path, FileAccess.WRITE)
 	if file == null:
-		push_error("SaveManager: no se pudo escribir en '%s'" % path)
+		push_error("SaveManager: could not write to '%s'" % path)
 		return false
 
 	file.store_string(JSON.stringify(data, "\t"))
@@ -48,7 +48,7 @@ func load_game(slot: int = 0) -> bool:
 
 	var file: FileAccess = FileAccess.open(path, FileAccess.READ)
 	if file == null:
-		push_error("SaveManager: no se pudo leer '%s'" % path)
+		push_error("SaveManager: could not read '%s'" % path)
 		return false
 
 	var content: String = file.get_as_text()
@@ -56,7 +56,7 @@ func load_game(slot: int = 0) -> bool:
 
 	var parsed: Variant = JSON.parse_string(content)
 	if parsed == null or not parsed is Dictionary:
-		push_error("SaveManager: archivo de guardado corrupto en '%s'" % path)
+		push_error("SaveManager: corrupt save file at '%s'" % path)
 		return false
 
 	var data: Dictionary = parsed
