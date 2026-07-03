@@ -18,16 +18,12 @@ func can_accept(other: ItemData) -> bool:
 
 ## Añade cuanto quepa y devuelve el sobrante que no entró.
 func add(other: ItemData, count: int) -> int:
+	if not is_empty() and item != other:
+		return count
 	if is_empty():
 		item = other
-		var space: int = other.max_stack
-		var added: int = min(count, space)
-		amount = added
-		return count - added
-	if item != other:
-		return count
-	var space: int = item.max_stack - amount
-	var added: int = min(count, space)
+	var available: int = item.max_stack - amount
+	var added: int = min(count, available)
 	amount += added
 	return count - added
 

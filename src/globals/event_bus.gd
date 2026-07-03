@@ -21,6 +21,7 @@ signal item_removed(item: ItemData, amount: int)
 signal inventory_changed
 signal active_slot_changed(slot: int)
 signal gold_changed(new_total: int, delta: int)
+signal energy_changed(new_total: int, delta: int)
 signal tool_used(tool: ItemData, world_position: Vector2)
 
 # --- Granja / Cultivos ---

@@ -8,10 +8,17 @@ extends Node
 const SAVE_DIR: String = "user://saves/"
 const SAVE_EXTENSION: String = ".save"
 const SAVE_VERSION: int = 1
+const FARMLAND_GROUP: StringName = &"farmland"
 
 
 func _ready() -> void:
 	DirAccess.make_dir_recursive_absolute(SAVE_DIR)
+
+
+## Guardado manual de prueba mientras no existe un menú de pausa (M7).
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("quicksave"):
+		save_game()
 
 
 func save_game(slot: int = 0) -> bool:
@@ -20,6 +27,7 @@ func save_game(slot: int = 0) -> bool:
 		"saved_at": Time.get_datetime_string_from_system(),
 		"game_state": GameState.to_dict(),
 		"time": TimeManager.to_dict(),
+		"farmland": _farmland_to_dict(),
 	}
 
 	var path: String = _slot_path(slot)
@@ -54,6 +62,9 @@ func load_game(slot: int = 0) -> bool:
 	var data: Dictionary = parsed
 	GameState.from_dict(data.get("game_state", {}))
 	TimeManager.from_dict(data.get("time", {}))
+	var farmland := get_tree().get_first_node_in_group(FARMLAND_GROUP) as FarmlandSystem
+	if farmland != null:
+		farmland.from_dict(data.get("farmland", {}))
 	return true
 
 
@@ -65,6 +76,11 @@ func delete_save(slot: int = 0) -> void:
 	var path: String = _slot_path(slot)
 	if FileAccess.file_exists(path):
 		DirAccess.remove_absolute(path)
+
+
+func _farmland_to_dict() -> Dictionary:
+	var farmland := get_tree().get_first_node_in_group(FARMLAND_GROUP) as FarmlandSystem
+	return farmland.to_dict() if farmland != null else {}
 
 
 func _slot_path(slot: int) -> String:
