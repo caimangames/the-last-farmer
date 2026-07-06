@@ -8,6 +8,7 @@ id = &"watering_can"
 display_name = "Watering Can"
 description = "For watering crops."
 category = 2
+tool_action = 2
 max_stack = 1
 sell_price = 0
 sellable = false

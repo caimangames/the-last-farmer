@@ -8,6 +8,7 @@ id = &"hoe"
 display_name = "Hoe"
 description = "For tilling the soil."
 category = 2
+tool_action = 1
 max_stack = 1
 sell_price = 0
 sellable = false

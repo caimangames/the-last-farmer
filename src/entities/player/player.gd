@@ -22,6 +22,7 @@ func _ready() -> void:
 	GameState.inventory = inventory
 	_play_anim("idle_down", false)
 	EventBus.active_slot_changed.emit(active_slot)
+	EventBus.tool_action_resolved.connect(_on_tool_action_resolved)
 
 
 # ---------------------------------------------------------------------------
@@ -116,5 +117,10 @@ func _try_use_tool() -> void:
 	var item := get_active_item()
 	if item == null:
 		return
-	GameState.spend_energy(ENERGY_COST_PER_TOOL_USE)
 	EventBus.tool_used.emit(item, get_global_mouse_position())
+
+
+## A no-op tool use (e.g. hoeing an already-tilled tile) must not drain energy.
+func _on_tool_action_resolved(_item: ItemData, success: bool) -> void:
+	if success:
+		GameState.spend_energy(ENERGY_COST_PER_TOOL_USE)

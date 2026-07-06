@@ -10,6 +10,7 @@ const PLOT_SIZE   := Vector2i(8, 6)
 @onready var _watered_layer: TileMapLayer = $WateredLayer
 @onready var _crop_layer: Node2D          = $CropLayer
 @onready var _farmland: FarmlandSystem    = $FarmlandSystem
+@onready var _farm_renderer: FarmRenderer = $FarmRenderer
 @onready var _props: Node2D              = $Props
 @onready var _player: Player             = $Entities/Player
 @onready var _hud: CanvasLayer           = $HUD
@@ -17,7 +18,8 @@ const PLOT_SIZE   := Vector2i(8, 6)
 
 func _ready() -> void:
 	_paint_grass()
-	_farmland.setup(_ground, _watered_layer, _crop_layer, _player, PLOT_ORIGIN, PLOT_SIZE)
+	_farmland.setup(_ground, _player, PLOT_ORIGIN, PLOT_SIZE)
+	_farm_renderer.setup(_farmland, _ground, _watered_layer, _crop_layer, PLOT_ORIGIN, PLOT_SIZE)
 	if GameState.loading_save:
 		GameState.loading_save = false
 		SaveManager.load_game()

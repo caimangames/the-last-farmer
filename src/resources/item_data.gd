@@ -8,11 +8,17 @@ class_name ItemData
 
 enum Category { SEED, CROP, TOOL, RESOURCE, FOOD, FISH, FORAGE, MISC }
 
+## What a tool/seed does when used on a tile. Lets FarmlandSystem dispatch
+## by data instead of matching on `id` strings, so a new tool only needs a
+## new .tres, never a code change.
+enum ToolAction { NONE, TILL, WATER, PLANT }
+
 @export var id: StringName
 @export var display_name: String = ""
 @export_multiline var description: String = ""
 @export var icon: Texture2D
 @export var category: Category = Category.MISC
+@export var tool_action: ToolAction = ToolAction.NONE
 
 ## How many units fit in a single inventory slot.
 @export var max_stack: int = 99

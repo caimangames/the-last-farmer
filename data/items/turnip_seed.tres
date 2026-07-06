@@ -16,6 +16,7 @@ display_name = "Turnip Seed"
 description = "Plant it in tilled soil."
 icon = SubResource("icon_turnip_seed")
 category = 0
+tool_action = 3
 max_stack = 99
 sell_price = 10
 sellable = false

@@ -23,11 +23,20 @@ signal active_slot_changed(slot: int)
 signal gold_changed(new_total: int, delta: int)
 signal energy_changed(new_total: int, delta: int)
 signal tool_used(tool: ItemData, world_position: Vector2)
+## Emitted after a tool_used action resolves, so the Player knows whether to
+## pay the energy cost (a no-op use, e.g. hoeing an already-tilled tile,
+## must not drain energy).
+signal tool_action_resolved(item: ItemData, success: bool)
 
 # --- Farm / Crops ---
 signal crop_planted(crop: CropData, tile: Vector2i)
 signal crop_watered(tile: Vector2i)
 signal crop_harvested(crop: CropData, tile: Vector2i)
+## Generic "redraw this tile" hint for FarmRenderer, emitted by FarmlandSystem
+## whenever a tile's visible state changes (tilled, watered, planted,
+## harvested, grown, withered). Semantic signals above are for gameplay
+## listeners; this one is purely for the view.
+signal tile_updated(tile: Vector2i)
 
 # --- Interaction / Dialogue ---
 signal interaction_started(interactable: Node)
