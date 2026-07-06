@@ -5,6 +5,7 @@
 [ext_resource type="TileSet" uid="uid://bx5kjm43xr8d" path="res://assets/tilesets/ground_tileset.tres" id="3"]
 [ext_resource type="Script" uid="uid://rwehkp0cnm08" path="res://src/systems/farming/farmland_system.gd" id="4"]
 [ext_resource type="PackedScene" path="res://src/ui/hud/hud.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://src/ui/menus/pause_menu.tscn" id="6"]
 
 [node name="Farm" type="Node2D" unique_id=180709987]
 script = ExtResource("1")
@@ -36,3 +37,5 @@ y_sort_enabled = true
 position = Vector2(160, 144)
 
 [node name="HUD" parent="." unique_id=1741475974 instance=ExtResource("5")]
+
+[node name="PauseMenu" parent="." instance=ExtResource("6")]

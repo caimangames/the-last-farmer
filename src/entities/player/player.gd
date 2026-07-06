@@ -17,10 +17,26 @@ var _current_anim: String = ""
 
 
 func _ready() -> void:
+	add_to_group(&"player")
 	inventory = Inventory.new(inventory_size)
 	GameState.inventory = inventory
 	_play_anim("idle_down", false)
 	EventBus.active_slot_changed.emit(active_slot)
+
+
+# ---------------------------------------------------------------------------
+# Saving
+# ---------------------------------------------------------------------------
+
+func to_dict() -> Dictionary:
+	return {"position_x": global_position.x, "position_y": global_position.y}
+
+
+func from_dict(data: Dictionary) -> void:
+	global_position = Vector2(
+		data.get("position_x", global_position.x),
+		data.get("position_y", global_position.y)
+	)
 
 
 func get_active_item() -> ItemData:

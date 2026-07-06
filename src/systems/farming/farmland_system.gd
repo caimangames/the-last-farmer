@@ -269,6 +269,11 @@ func from_dict(data: Dictionary) -> void:
 		if not _tiles.has(pos):
 			continue
 		var d: Dictionary = data[key]
+		## JSON always round-trips numbers as float; State.PLANTED etc. are int,
+		## and `in`/Array.has() compare by exact type, so an un-cast float state
+		## silently fails every "is this tile planted?" check below.
+		d.state = int(d.get("state", State.UNTILLED))
+		d.days_grown = int(d.get("days_grown", 0))
 		d.crop_id = StringName(d.get("crop_id", ""))
 		_tiles[pos] = d
 		_update_ground(pos)

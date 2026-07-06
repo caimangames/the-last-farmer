@@ -9,13 +9,14 @@ const SAVE_DIR: String = "user://saves/"
 const SAVE_EXTENSION: String = ".save"
 const SAVE_VERSION: int = 1
 const FARMLAND_GROUP: StringName = &"farmland"
+const PLAYER_GROUP: StringName = &"player"
 
 
 func _ready() -> void:
 	DirAccess.make_dir_recursive_absolute(SAVE_DIR)
 
 
-## Manual test save while there's no pause menu yet (M7).
+## Quicksave shortcut (F5), independent of the pause menu's Save button.
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("quicksave"):
 		save_game()
@@ -28,6 +29,7 @@ func save_game(slot: int = 0) -> bool:
 		"game_state": GameState.to_dict(),
 		"time": TimeManager.to_dict(),
 		"farmland": _farmland_to_dict(),
+		"player": _player_to_dict(),
 	}
 
 	var path: String = _slot_path(slot)
@@ -65,6 +67,9 @@ func load_game(slot: int = 0) -> bool:
 	var farmland := get_tree().get_first_node_in_group(FARMLAND_GROUP) as FarmlandSystem
 	if farmland != null:
 		farmland.from_dict(data.get("farmland", {}))
+	var player := get_tree().get_first_node_in_group(PLAYER_GROUP) as Player
+	if player != null:
+		player.from_dict(data.get("player", {}))
 	return true
 
 
@@ -81,6 +86,11 @@ func delete_save(slot: int = 0) -> void:
 func _farmland_to_dict() -> Dictionary:
 	var farmland := get_tree().get_first_node_in_group(FARMLAND_GROUP) as FarmlandSystem
 	return farmland.to_dict() if farmland != null else {}
+
+
+func _player_to_dict() -> Dictionary:
+	var player := get_tree().get_first_node_in_group(PLAYER_GROUP) as Player
+	return player.to_dict() if player != null else {}
 
 
 func _slot_path(slot: int) -> String:
